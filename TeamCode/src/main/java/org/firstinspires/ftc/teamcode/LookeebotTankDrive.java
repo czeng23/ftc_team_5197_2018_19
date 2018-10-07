@@ -48,7 +48,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @TeleOp(name="Lookeebot: Teleop Tank", group="Lookeebot")
 //@Disabled
-public class LookeebotTankDrive extends OpMode{
+public class LookeebotTankDrive extends OpMode {
 
     /* Declare OpMode members. */
     private Lookeebot robot       = new Lookeebot();  // Class created to define a Trainerbot's hardware
@@ -70,9 +70,9 @@ public class LookeebotTankDrive extends OpMode{
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
-    @Override
-    public void init_loop() {
-    }
+    //@Override
+    //public void init_loop() {
+    //}
 
     /*
      * Code to run ONCE when the driver hits PLAY
