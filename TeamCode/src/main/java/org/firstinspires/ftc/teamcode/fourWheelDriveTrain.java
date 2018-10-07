@@ -4,39 +4,42 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class fourWheelDriveTrain {
 
-    // REVTrix specific measurements
-    static final double     COUNTS_PER_MOTOR_REV    = 0 ;
-    static final double     DRIVE_GEAR_REDUCTION    = 0.0 ;
+    // drivetrain specific measurements
+    private final double     COUNTS_PER_MOTOR_REV; //maybe put in interface
+    private final double     DRIVE_GEAR_REDUCTION; //maybe put in interface (probably for all variables)
 
-    // REVTrix specific drive train members.
-    static final double     WHEEL_DIAMETER_INCHES   = 0.0 ; //estimate
-    static final double     DRIVE_WHEEL_SEPARATION  = 0.0 ; //estimate
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+    // drivetrain specific drive train members.
+    private final double     WHEEL_DIAMETER_INCHES;
+    private final double     DRIVE_WHEEL_SEPARATION;
+    private final double     COUNTS_PER_INCH;
+    private final DcMotor.RunMode RUNMODE;
 
     // REVTrix specific motor and actuator members.
-    public DcMotor FrontLeftDrive   = null;
-    public DcMotor FrontRightDrive  = null;
-    public DcMotor RearLeftDrive    = null;
-    public DcMotor RearRightDrive   = null;
+    private DcMotor FrontLeftDrive   = null;
+    private DcMotor FrontRightDrive  = null;
+    private DcMotor RearLeftDrive    = null;
+    private DcMotor RearRightDrive   = null;
 
-    public void fourWheelDriveTrain( double counts_per_motor_rev, double drive_gear_reduction, double wheel_diamter, double drive_wheel_seperation){
+    fourWheelDriveTrain( double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION, double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION, DcMotor.RunMode RUNMODE){
+        this.COUNTS_PER_MOTOR_REV = COUNTS_PER_MOTOR_REV;
+        this.DRIVE_GEAR_REDUCTION = DRIVE_GEAR_REDUCTION;
+        this.WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_INCHES;
+        this.DRIVE_WHEEL_SEPARATION = DRIVE_WHEEL_SEPARATION;
+        this.RUNMODE = RUNMODE;
+        COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+                (WHEEL_DIAMETER_INCHES * 3.1415);
+    }
 
-
-
+    public void DriveForwardInches(){
 
     }
 
-    public void Drive(){
+    public void init(HardwareMap ahwMap){
 
-    }
-
-    public void initialize(HardwareMap ahwmap){
-
-        FrontLeftDrive = ahwmap.get(DcMotor.class, "motor0");
-        FrontRightDrive = ahwmap.get(DcMotor.class, "motor1");
-        RearLeftDrive = ahwmap.get(DcMotor.class, "motor2");
-        RearRightDrive = ahwmap.get(DcMotor.class, "motor3");
+        FrontLeftDrive = ahwMap.get(DcMotor.class, "motor0");
+        FrontRightDrive = ahwMap.get(DcMotor.class, "motor1");
+        RearLeftDrive = ahwMap.get(DcMotor.class, "motor2");
+        RearRightDrive = ahwMap.get(DcMotor.class, "motor3");
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if
         // using AndyMark motors
@@ -54,10 +57,10 @@ public class fourWheelDriveTrain {
         RearRightDrive.setPower(0);
 
         // Set both motors to run with encoders.
-        FrontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FrontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RearLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RearRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FrontLeftDrive.setMode(RUNMODE);
+        FrontRightDrive.setMode(RUNMODE);
+        RearLeftDrive.setMode(RUNMODE);
+        RearRightDrive.setMode(RUNMODE);
     }
 }
 
