@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * This file provides basic Teleop driving for a Lookeebot. It is modified and simplified
@@ -47,7 +48,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="Lookeebot: Teleop Tank", group="Lookeebot")
 //@Disabled
-public class LookeebotTankDrive extends OpMode {
+public class LookeebotTankDrive extends OpMode{
 
     /* Declare OpMode members. */
     private Lookeebot robot       = new Lookeebot();  // Class created to define a Trainerbot's hardware

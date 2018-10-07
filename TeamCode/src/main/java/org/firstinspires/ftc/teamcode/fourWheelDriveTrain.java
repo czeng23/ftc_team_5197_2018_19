@@ -2,32 +2,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class fourWheelDriveTrain {
-
-    // drivetrain specific measurements
-    private final double     COUNTS_PER_MOTOR_REV; //maybe put in interface
-    private final double     DRIVE_GEAR_REDUCTION; //maybe put in interface (probably for all variables)
-
-    // drivetrain specific drive train members.
-    private final double     WHEEL_DIAMETER_INCHES;
-    private final double     DRIVE_WHEEL_SEPARATION;
-    private final double     COUNTS_PER_INCH;
-    private final DcMotor.RunMode RUNMODE;
-
+public class fourWheelDriveTrain extends ModularDriveTrain{
     // REVTrix specific motor and actuator members.
     private DcMotor FrontLeftDrive   = null;
     private DcMotor FrontRightDrive  = null;
     private DcMotor RearLeftDrive    = null;
     private DcMotor RearRightDrive   = null;
 
+
     fourWheelDriveTrain( double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION, double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION, DcMotor.RunMode RUNMODE){
-        this.COUNTS_PER_MOTOR_REV = COUNTS_PER_MOTOR_REV;
-        this.DRIVE_GEAR_REDUCTION = DRIVE_GEAR_REDUCTION;
-        this.WHEEL_DIAMETER_INCHES = WHEEL_DIAMETER_INCHES;
-        this.DRIVE_WHEEL_SEPARATION = DRIVE_WHEEL_SEPARATION;
-        this.RUNMODE = RUNMODE;
-        COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                (WHEEL_DIAMETER_INCHES * 3.1415);
+        super(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION, WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
     }
 
     public void DriveForwardInches(){
