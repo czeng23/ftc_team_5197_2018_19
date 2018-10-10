@@ -7,6 +7,7 @@ There will always be a ``` master ``` branch. This is intended for fully functio
 
 #### Merging Branches
 When merging to a branch that is the parent branch, do a merge (or fast forward). For the vis-a-versa scenario, do a rebase. 
+See https://youtu.be/to6tIdy5rNc
 
 # Official FTC Instructions
 
