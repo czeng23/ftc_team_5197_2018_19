@@ -1,3 +1,15 @@
+# FTC Team 5197 Repo Insturctions
+## FTC Team 5197 Welcome!!
+This github repo is forked from the official FTC repo. 
+
+### ftc_team_5197_2018_19 Branching conventions
+There will always be a ``` master ``` branch. This is intended for fully functional competition ready code. It would be the target branch for releases of our robot code. Branched from ``` master ``` is ``` test ``` , which is reserved for testing all code for competition as a whole. Branched from ```test``` is the ```development ``` branch. This branch will be where all code in development is. Feature branches are branched from ```development``` like ```REVTrix ``` and ``` modular_hardware_systems```. If you want to contribute code to one of the two branches mentioned earlier, push it there. If none of these branches match the purpose of the code you are pushing, push the code direcrtly to ``` development ```. If multiple people want to work on a similar feature, create a branch from that feature branch with the name ```LastNameFirstInitialFeature```.
+
+#### Merging Branches
+When merging to a branch that is the parent branch, do a merge (or fast forward). For the vis-a-versa scenario, do a rebase. 
+
+# Official FTC Instructions
+
 ## Welcome!
 This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
 
