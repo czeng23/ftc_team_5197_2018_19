@@ -14,9 +14,10 @@ public class fourWheelDriveTrain extends ModularDriveTrain{
         super(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION, WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
     }
 
-    public void DriveForwardInches(){
+    /*public void DriveForwardInches(){
 
     }
+    */
 
     public void init(HardwareMap ahwMap){
 
@@ -27,9 +28,9 @@ public class fourWheelDriveTrain extends ModularDriveTrain{
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if
         // using AndyMark motors
-        FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
+        FrontRightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if
         // using AndyMark motors
-        RearLeftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if
+        RearLeftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if
         // using AndyMark motors
         RearRightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
         // using AndyMark motors
