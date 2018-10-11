@@ -47,5 +47,14 @@ public class fourWheelDriveTrain extends ModularDriveTrain{
         RearLeftDrive.setMode(RUNMODE);
         RearRightDrive.setMode(RUNMODE);
     }
+
+    public void teleOpTankDrive(double leftYJoystick, double rightYJoystick){
+        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards,
+        // so negate it) Negate it at function call
+        FrontLeftDrive.setPower(leftYJoystick);
+        FrontRightDrive.setPower(rightYJoystick);
+        RearLeftDrive.setPower(leftYJoystick);
+        RearRightDrive.setPower(rightYJoystick);
+    }
 }
 
