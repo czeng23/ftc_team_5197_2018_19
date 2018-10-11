@@ -29,9 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * This file provides basic Teleop driving for a REVTrixbot. It is modified and simplified
@@ -53,7 +51,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @TeleOp(name="REVTrixbot: Teleop Tank", group="REVTrixbot")
 //@Disabled
-public class REVTrixbotTankDrive extends OpMode {
+public class REVTrixbotTankDrive extends ModularRobotIterativeTeleOp {
 
     /* Declare OpMode members. */
     private REVTrixbot robot       = new REVTrixbot();  // Class created to define a REVTrixbot's hardware
@@ -91,16 +89,11 @@ public class REVTrixbotTankDrive extends OpMode {
      */
     @Override
     public void loop() {
-        double left;
-        double right;
 
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
+        robot.dt.teleOpTankDrive(gamepad1);
 
-        robot.dt.teleOpTankDrive(left, right);
-
-        telemetry.addData("left",  "%.2f", left);
-        telemetry.addData("right", "%.2f", right);
+        telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y);
+        telemetry.addData("right", "%.2f", -gamepad1.right_stick_y);
     }
 
     /*

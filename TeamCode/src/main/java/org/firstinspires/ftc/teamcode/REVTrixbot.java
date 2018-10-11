@@ -30,10 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import static java.lang.Math.*;
 
 /**
  * This is NOT an opmode.
@@ -68,9 +64,9 @@ public class REVTrixbot extends GenericFTCRobot
     // ** to do: check these for REVTrixbot dimensions.
     private static final double     WHEEL_DIAMETER_INCHES   = 3.5 ; // 90mm Traction Wheel
     private static final double     DRIVE_WHEEL_SEPARATION  = 15.0 ;
-    private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
+    private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
 
-    fourWheelDriveTrain dt = new fourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
+    FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
             WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
 
 }

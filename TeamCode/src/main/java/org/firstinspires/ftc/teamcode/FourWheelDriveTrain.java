@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class fourWheelDriveTrain extends ModularDriveTrain{
+public class FourWheelDriveTrain extends ModularDriveTrain{
     // REVTrix specific motor and actuator members.
     private DcMotor FrontLeftDrive   = null;
     private DcMotor FrontRightDrive  = null;
@@ -10,7 +11,7 @@ public class fourWheelDriveTrain extends ModularDriveTrain{
     private DcMotor RearRightDrive   = null;
 
 
-    fourWheelDriveTrain( double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION, double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION, DcMotor.RunMode RUNMODE){
+    FourWheelDriveTrain(double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION, double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION, DcMotor.RunMode RUNMODE){
         super(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION, WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
     }
 
@@ -48,13 +49,13 @@ public class fourWheelDriveTrain extends ModularDriveTrain{
         RearRightDrive.setMode(RUNMODE);
     }
 
-    public void teleOpTankDrive(double leftYJoystick, double rightYJoystick){
+    public void teleOpTankDrive(Gamepad driverGamepad){
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards,
         // so negate it) Negate it at function call
-        FrontLeftDrive.setPower(leftYJoystick);
-        FrontRightDrive.setPower(rightYJoystick);
-        RearLeftDrive.setPower(leftYJoystick);
-        RearRightDrive.setPower(rightYJoystick);
+        FrontLeftDrive.setPower(-driverGamepad.left_stick_y);
+        FrontRightDrive.setPower(-driverGamepad.right_stick_y);
+        RearLeftDrive.setPower(-driverGamepad.left_stick_y);
+        RearRightDrive.setPower(-driverGamepad.right_stick_y);
     }
 }
 
