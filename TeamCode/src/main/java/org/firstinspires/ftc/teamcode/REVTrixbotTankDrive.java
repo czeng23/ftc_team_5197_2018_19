@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * This file provides basic Teleop driving for a REVTrixbot. It is modified and simplified
@@ -65,7 +66,7 @@ public class REVTrixbotTankDrive extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
+        robot.dt.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello, Driver!");    //
@@ -93,15 +94,10 @@ public class REVTrixbotTankDrive extends OpMode {
         double left;
         double right;
 
-        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards,
-        // so negate it)
         left = -gamepad1.left_stick_y;
         right = -gamepad1.right_stick_y;
 
-        robot.leftFrontDrive.setPower(left);
-        robot.leftRearDrive.setPower(left);
-        robot.rightFrontDrive.setPower(right);
-        robot.rightRearDrive.setPower(right);
+        robot.dt.teleOpTankDrive(left, right);
 
         telemetry.addData("left",  "%.2f", left);
         telemetry.addData("right", "%.2f", right);
