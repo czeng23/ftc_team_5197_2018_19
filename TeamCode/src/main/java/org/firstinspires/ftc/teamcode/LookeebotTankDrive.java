@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * This file provides basic Teleop driving for a Lookeebot. It is modified and simplified
@@ -69,9 +70,9 @@ public class LookeebotTankDrive extends OpMode {
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
-    @Override
-    public void init_loop() {
-    }
+    //@Override
+    //public void init_loop() {
+    //}
 
     /*
      * Code to run ONCE when the driver hits PLAY
