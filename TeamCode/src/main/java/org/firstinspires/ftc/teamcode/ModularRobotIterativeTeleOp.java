@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name= "ModuleBot: Module Test", group= "ModuleBot")
-public class ModularRobotInterativeTeleOp extends ModularRobotIterativeOpMode {
+public class ModularRobotIterativeTeleOp extends ModularRobotIterativeOpMode {
     private modularFTCBot Modulebot = new modularFTCBot();
 
     @Override
