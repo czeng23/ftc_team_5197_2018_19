@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public abstract class ModularDriveTrain implements FTCModularizableHardware {
+public abstract class ModularDriveTrain implements FTCModularDrivetrainDrivable {
     // drivetrain specific measurements
     protected final double     COUNTS_PER_MOTOR_REV;
     protected final double     DRIVE_GEAR_REDUCTION;

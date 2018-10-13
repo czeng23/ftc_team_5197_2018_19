@@ -48,7 +48,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @TeleOp(name="Lookeebot: Teleop Tank", group="Lookeebot")
 //@Disabled
-public class LookeebotTankDrive extends OpMode {
+public class LookeebotTankDrive extends ModularRobotIterativeTeleOp {
 
     /* Declare OpMode members. */
     private Lookeebot robot       = new Lookeebot();  // Class created to define a Trainerbot's hardware
@@ -61,7 +61,7 @@ public class LookeebotTankDrive extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
+        robot.dt.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //
@@ -86,18 +86,11 @@ public class LookeebotTankDrive extends OpMode {
      */
     @Override
     public void loop() {
-        double left;
-        double right;
 
-        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
+        robot.dt.teleOpTankDrive(gamepad1);
 
-        robot.leftDrive.setPower(left);
-        robot.rightDrive.setPower(right);
-
-        telemetry.addData("left",  "%.2f", left);
-        telemetry.addData("right", "%.2f", right);
+        telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y);
+        telemetry.addData("right", "%.2f", -gamepad1.right_stick_y);
     }
 
     /*
