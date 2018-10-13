@@ -12,7 +12,7 @@ public class modularFTCBot extends GenericFTCRobot { //implement Modularizableha
     static final double     DRIVE_WHEEL_SEPARATION  = 28.0 ; //estimate
     static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
-    fourWheelDriveTrain dt = new fourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
+    FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
             WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
 
 

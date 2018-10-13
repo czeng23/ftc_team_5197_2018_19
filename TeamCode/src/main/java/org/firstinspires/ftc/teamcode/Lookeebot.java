@@ -49,7 +49,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Motor channel:  Right drive motor:        "motor1"
  */
 
-public class Lookeebot
+public class Lookeebot extends GenericFTCRobot
 {
     // Trainerbot specific measurements
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;
@@ -58,42 +58,10 @@ public class Lookeebot
     // Trainerbot specific drive train members.
     static final double     WHEEL_DIAMETER_INCHES   = 5.0 ;
     static final double     DRIVE_WHEEL_SEPARATION  = 17.0 ;
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final DcMotor.RunMode     RUNMODE = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
 
-    // Trainerbot specific motor and actuator members.
-    public DcMotor leftDrive   = null;
-    public DcMotor rightDrive  = null;
+    TwoWheelDriveTrain dt = new TwoWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
+            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
 
-    /* local OpMode members. */
-    HardwareMap hwMap           =  null;
-    private ElapsedTime period  = new ElapsedTime();
 
-    /* Constructor */
-    public Lookeebot(){
-
-    }
-
-    /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
-        // Save reference to Hardware map
-        hwMap = ahwMap;
-
-        // Define and Initialize Tetrix motors
-        rightDrive  = hwMap.get(DcMotor.class, "motor0");
-        leftDrive = hwMap.get(DcMotor.class, "motor1");
-        leftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if
-        // using AndyMark motors
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
-        // using AndyMark motors
-
-        // Set all motors to zero power
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-
-        // Set both motors to run with encoders.
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-    }
 }
