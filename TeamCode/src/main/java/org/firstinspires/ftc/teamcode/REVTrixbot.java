@@ -69,4 +69,6 @@ public class REVTrixbot extends GenericFTCRobot
     FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
             WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
 
+    GoldAlignExample goldAlignmentDetector = new GoldAlignExample();
+
 }
