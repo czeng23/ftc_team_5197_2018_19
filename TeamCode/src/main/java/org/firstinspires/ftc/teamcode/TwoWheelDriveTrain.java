@@ -29,7 +29,27 @@ public class TwoWheelDriveTrain extends ModularDriveTrain {
     public void teleOpTankDrive(Gamepad driverGamepad) {
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards,
         // so negate it) Negate it at function call
-        leftDrive.setPower(-driverGamepad.left_stick_y);
-        rightDrive.setPower(-driverGamepad.right_stick_y);
+        leftPower = -driverGamepad.left_stick_y; //may seem unnecessary to assign leftPower, but this is for consistency.
+        rightPower = -driverGamepad.right_stick_y;
+
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
+    }
+
+    public void teleOpArcadeDrive(Gamepad driverGamepad, F310JoystickInputNames.Joysticks selectedDrivingStick) {
+
+        if(selectedDrivingStick == F310JoystickInputNames.Joysticks.LEFT_STICK){ //in future, consider moving this to parent class
+            leftPower = -driverGamepad.left_stick_y - -driverGamepad.left_stick_x;
+            rightPower = -driverGamepad.left_stick_y + -driverGamepad.left_stick_x;
+        }
+
+        else if(selectedDrivingStick == F310JoystickInputNames.Joysticks.RIGHT_STICK) {
+            leftPower = -driverGamepad.right_stick_y - -driverGamepad.right_stick_x;
+            rightPower = -driverGamepad.right_stick_y + -driverGamepad.right_stick_x;
+        }
+
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
+
     }
 }

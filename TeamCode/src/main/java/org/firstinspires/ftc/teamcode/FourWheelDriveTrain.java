@@ -10,6 +10,8 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
     private DcMotor RearLeftDrive    = null;
     private DcMotor RearRightDrive   = null;
 
+    //current motor power
+
 
     FourWheelDriveTrain(double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION, double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION, DcMotor.RunMode RUNMODE){
         super(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION, WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
@@ -52,10 +54,33 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
     public void teleOpTankDrive(Gamepad driverGamepad){
         // Run wheels in tank mode (note: The joystick goes negative when pushed forwards,
         // so negate it) Negate it at function call
-        FrontLeftDrive.setPower(-driverGamepad.left_stick_y);
-        FrontRightDrive.setPower(-driverGamepad.right_stick_y);
-        RearLeftDrive.setPower(-driverGamepad.left_stick_y);
-        RearRightDrive.setPower(-driverGamepad.right_stick_y);
+        leftPower = -driverGamepad.left_stick_y;
+        rightPower = -driverGamepad.right_stick_y;
+        FrontLeftDrive.setPower(leftPower);
+        FrontRightDrive.setPower(rightPower);
+        RearLeftDrive.setPower(leftPower);
+        RearRightDrive.setPower(rightPower);
+    }
+
+    public void teleOpArcadeDrive(Gamepad driverGamepad, F310JoystickInputNames.Joysticks selectedDrivingStick){
+
+        //float leftPower = 0f; //may want to move these as field variables. Probably should not initialize every time.
+        //float rightPower = 0f;
+
+        if(selectedDrivingStick == F310JoystickInputNames.Joysticks.LEFT_STICK){
+            leftPower = -driverGamepad.left_stick_y - -driverGamepad.left_stick_x;
+            rightPower = -driverGamepad.left_stick_y + -driverGamepad.left_stick_x;
+        }
+
+        else if(selectedDrivingStick == F310JoystickInputNames.Joysticks.RIGHT_STICK) {
+            leftPower = -driverGamepad.right_stick_y - -driverGamepad.right_stick_x;
+            rightPower = -driverGamepad.right_stick_y + -driverGamepad.right_stick_x;
+        }
+
+        FrontLeftDrive.setPower(leftPower);
+        FrontRightDrive.setPower(rightPower);
+        RearLeftDrive.setPower(leftPower);
+        RearRightDrive.setPower(rightPower);
     }
 }
 
