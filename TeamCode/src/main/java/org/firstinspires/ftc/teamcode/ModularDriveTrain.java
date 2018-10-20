@@ -14,6 +14,10 @@ public abstract class ModularDriveTrain implements FTCModularDrivetrainDrivable 
     protected final DcMotor.RunMode RUNMODE; //made protected so child classes (actual drivetrains, can access these constants)
     protected final double     COUNTS_PER_INCH;
 
+    protected float leftPower = 0f;
+    protected float rightPower = 0f;
+
+
     //abstract public void init(HardwareMap ahwMap);
     //abstract public void driveLinearInches(double power, double distanceInInches);
     //abstract public void driveCurved();
