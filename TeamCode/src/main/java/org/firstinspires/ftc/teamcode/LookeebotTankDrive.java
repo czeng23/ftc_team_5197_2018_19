@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * This file provides basic Teleop driving for a Lookeebot. It is modified and simplified
@@ -47,7 +48,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="Lookeebot: Teleop Tank", group="Lookeebot")
 //@Disabled
-public class LookeebotTankDrive extends OpMode {
+public class LookeebotTankDrive extends ModularRobotIterativeTeleOp {
 
     /* Declare OpMode members. */
     private Lookeebot robot       = new Lookeebot();  // Class created to define a Trainerbot's hardware
@@ -60,7 +61,7 @@ public class LookeebotTankDrive extends OpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
+        robot.dt.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");    //
@@ -69,9 +70,9 @@ public class LookeebotTankDrive extends OpMode {
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
-    @Override
-    public void init_loop() {
-    }
+    //@Override
+    //public void init_loop() {
+    //}
 
     /*
      * Code to run ONCE when the driver hits PLAY
@@ -85,18 +86,11 @@ public class LookeebotTankDrive extends OpMode {
      */
     @Override
     public void loop() {
-        double left;
-        double right;
 
-        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
+        robot.dt.teleOpTankDrive(gamepad1);
 
-        robot.leftDrive.setPower(left);
-        robot.rightDrive.setPower(right);
-
-        telemetry.addData("left",  "%.2f", left);
-        telemetry.addData("right", "%.2f", right);
+        telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y);
+        telemetry.addData("right", "%.2f", -gamepad1.right_stick_y);
     }
 
     /*
