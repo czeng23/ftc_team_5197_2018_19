@@ -70,8 +70,6 @@ public class SensorBNO055IMU extends LinearOpMode
     // State used for updating telemetry
     Orientation angles;
     Acceleration gravity;
-    Position                position = new Position(); // zeros X, Y, Z and acquisition time
-    Velocity                velocity = new Velocity();
 
     //----------------------------------------------------------------------------------------------
     // Main logic
@@ -101,9 +99,6 @@ public class SensorBNO055IMU extends LinearOpMode
 
         // Wait until we're told to go
         waitForStart();
-
-        // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(position, velocity,100);
 
         // Loop and update the dashboard
         while (opModeIsActive()) {
@@ -157,12 +152,6 @@ public class SensorBNO055IMU extends LinearOpMode
                     return formatAngle(angles.angleUnit, angles.thirdAngle);
                     }
                 });
-
-        telemetry.addLine()
-                .addData("X", position.x)
-                .addData("Y", position.y)
-                .addData("Z", position.z);
-
     }
 
     //----------------------------------------------------------------------------------------------
