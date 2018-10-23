@@ -47,12 +47,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import java.util.Locale;
 
 /**
- * {@link SensorBNO055IMU} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- *
+ * {@link SensorBNO055IMU} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.*
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
+ *
+ * This opmode uses the REV expansion hub's built-in BNO055 Intertial Measuring Unit (IMU)
+ * to determine and report the hub's orientation and position.
+ *
+ * Run it with the Robot Controller plugged into the hub, power the hub, and use robot
+ * configuration HubOnly.
  */
 @TeleOp(name = "Sensor: BNO055 IMU", group = "Sensor")
 //@Disabled                            // Comment this out to add to the opmode list
@@ -157,20 +159,9 @@ public class SensorBNO055IMU extends LinearOpMode
                 });
 
         telemetry.addLine()
-                .addData("grvty", new Func<String>() {
-                    @Override public String value() {
-                        return gravity.toString();
-                    }
-                })
-                .addData("mag", new Func<String>() {
-                    @Override public String value() {
-                        return String.format(Locale.getDefault(), "%.3f",
-                                Math.sqrt(gravity.xAccel*gravity.xAccel
-                                        + gravity.yAccel*gravity.yAccel
-                                        + gravity.zAccel*gravity.zAccel));
-                    }
-                });
-
+                .addData("X", position.x)
+                .addData("Y", position.y)
+                .addData("Z", position.z);
 
     }
 
