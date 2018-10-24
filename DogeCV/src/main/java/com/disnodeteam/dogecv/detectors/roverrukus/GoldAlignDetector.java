@@ -22,7 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Victo on 9/17/2018.
+ * Version history
+ * ======= =======
+ *
+ * 0.1  Created by FTC 7195 member Victo on 9/17/2018.
+ * 0.2  FTC 5197 Coach jmr changed to report position of detected Gold Mineral with
+ *      respect to center of screen.
  */
 
 public class GoldAlignDetector extends DogeCVDetector {
@@ -37,6 +42,7 @@ public class GoldAlignDetector extends DogeCVDetector {
     private boolean found    = false; // Is the gold mineral found
     private boolean aligned  = false; // Is the gold mineral aligned
     private double  goldXPos = 0;     // X Position (in pixels) of the gold element
+    private double alignXError = -9999;
 
     // Detector settings
     public boolean debugAlignment = true; // Show debug lines to show alignment settings
@@ -104,6 +110,7 @@ public class GoldAlignDetector extends DogeCVDetector {
         double alignX    = (getAdjustedSize().width / 2) + alignPosOffset; // Center point in X Pixels
         double alignXMin = alignX - (alignSize / 2); // Min X Pos in pixels
         double alignXMax = alignX +(alignSize / 2); // Max X pos in pixels
+        //alignXError = alignX - 320; // Zero error at X = half screen width
         double xPos; // Current Gold X Pos
 
         if(bestRect != null){
@@ -113,7 +120,9 @@ public class GoldAlignDetector extends DogeCVDetector {
 
             // Set align X pos
             xPos = bestRect.x + (bestRect.width / 2);
+            //xPos = bestRect.x;
             goldXPos = xPos;
+            alignXError = goldXPos - 320;
 
             // Draw center point
             Imgproc.circle(displayMat, new Point( xPos, bestRect.y + (bestRect.height / 2)), 5, new Scalar(0,255,0),2);
@@ -126,7 +135,10 @@ public class GoldAlignDetector extends DogeCVDetector {
             }
 
             // Draw Current X
-            Imgproc.putText(displayMat,"Current X: " + bestRect.x,new Point(10,getAdjustedSize().height - 10),0,0.5, new Scalar(255,255,255),1);
+            //Imgproc.putText(displayMat,"Current X: " + bestRect.x,
+            Imgproc.putText(displayMat,"X error: " + alignXError,
+                    new Point(10, getAdjustedSize().height - 10),
+                    0,1.0, new Scalar(255,255,255),1);
             found = true;
         }else{
             found = false;
@@ -189,7 +201,8 @@ public class GoldAlignDetector extends DogeCVDetector {
      * @return last x-position in screen pixels of gold element
      */
     public double getXPosition(){
-        return goldXPos;
+        return alignXError; // return that error thingie
+        //return goldXPos;
     }
 
     /**
