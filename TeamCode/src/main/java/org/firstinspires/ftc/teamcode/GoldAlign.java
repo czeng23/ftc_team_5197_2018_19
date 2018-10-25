@@ -33,17 +33,14 @@ package org.firstinspires.ftc.teamcode;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
-import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-@TeleOp(name="GoldAlign Example", group="DogeCV")
 
-public class GoldAlignExample extends OpMode
+public class GoldAlign extends OpMode
 {
     private GoldAlignDetector detector;
-
 
     @Override
     public void init() {
@@ -54,7 +51,7 @@ public class GoldAlignExample extends OpMode
         detector.useDefaults();
 
         // Optional Tuning
-        detector.alignSize = 610; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
+        detector.alignSize = 100; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
         detector.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
         detector.downscale = 0.4; // How much to downscale the input frames
 
@@ -85,13 +82,13 @@ public class GoldAlignExample extends OpMode
 
     @Override
     public void loop() {
-        boolean detected = true;
-        double x = detector.getXPosition() - 300.0;
-        if(! detector.getAligned() ){
+        double x = detector.getXPosition() -300.0;
+        if (!detector.getAligned()) {
             x = -99999.9;
-            detected = false;
         }
-        telemetry.addData("IsAligned" ,detected); // Is the bot aligned with the gold mineral
+
+        telemetry.addData("IsAligned" , detector.getAligned()); // Is the bot aligned with the gold mineral
+        //telemetry.addData("X Pos" , detector.getXPosition()-300); // Gold X pos.
         telemetry.addData("X Pos" , x); // Gold X pos.
     }
 
