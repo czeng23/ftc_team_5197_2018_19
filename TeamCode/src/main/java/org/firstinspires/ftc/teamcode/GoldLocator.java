@@ -36,22 +36,22 @@ import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-
-
-public class GoldAlign extends OpMode
+public class GoldLocator extends OpMode
 {
     private GoldAlignDetector detector;
 
-    @Override
+    private boolean detected;
+    private double x;
+
     public void init() {
-        telemetry.addData("Status", "DogeCV 2018.0 - Gold Align Example");
+        //telemetry.addData("Status", "DogeCV 2018.0 - Gold Align Example");
 
         detector = new GoldAlignDetector();
         detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         detector.useDefaults();
 
         // Optional Tuning
-        detector.alignSize = 100; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
+        detector.alignSize = 610; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
         detector.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
         detector.downscale = 0.4; // How much to downscale the input frames
 
@@ -64,40 +64,34 @@ public class GoldAlign extends OpMode
 
         detector.enable();
 
-
     }
 
-    @Override
-    public void init_loop() {
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
-
-    }
-
-
-    @Override
-    public void loop() {
-        double x = detector.getXPosition() -300.0;
-        if (!detector.getAligned()) {
+    public void update() {
+        boolean detected = true;
+        x = detector.getXPosition() - 300.0;
+        if(! detector.getAligned() ){
             x = -99999.9;
+            detected = false;
         }
 
-        telemetry.addData("IsAligned" , detector.getAligned()); // Is the bot aligned with the gold mineral
-        //telemetry.addData("X Pos" , detector.getXPosition()-300); // Gold X pos.
-        telemetry.addData("X Pos" , x); // Gold X pos.
     }
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
+    public boolean getVisible() {
+
+        return detected;
+    }
+
+    public double getPos() {
+
+        return x;
+    }
+
     public void stop() {
         detector.disable();
+    }
+
+    public void loop() {
+
     }
 
 }
