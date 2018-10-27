@@ -37,36 +37,46 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * This is NOT an opmode.
  *
  * This class can be used to define all the specific hardware for a single
- * robot, a Lookeebot.
- * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot"
- * for usage examples easily converted to run on a Lookeebot.
+ * robot, a Lookeebot_4Wheels. This our Rover Ruckus competition bot. It is
+ * adapted from our Trainerbot and Lookeebot.
  *
- * This robot class has no servos or sensors except for the Robot Controller
- * phone. It is designed for a robot that just carries a phone around and
- * looks at stuff.
+ * See the supplied external samples for FtcRobotController for usage examples
+ * easily converted to run on this bot.
  *
- * Motor channel:  Left  drive motor:        "motor0"
- * Motor channel:  Right drive motor:        "motor1"
+ * Version history
+ * ======= =======
+ *
+ * v 0.1    Bob, 10/26. First conversion from Trainerbot and Lookeebot.
+ * v 0.2    jmr, 10/27. Improved documentation and fixed motor numbering errors.
+ * v 0.21   jmr, 10/27. Adjusted motor specific constants to fit REV Core HEX
+ *          motors. More work on documentation.
+ *
  */
 
 public class Lookeebot_4Wheels
 {
+    // General conversion constants.
+    static final double MM_PER_IN = 25.4;   // ** to do: move to Generic robot class
+    static final double IN_PER_MM = 1/MM_PER_IN;
+
     // Specific measurements for this robot class.
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // ** adjust for REV Core Hex
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // ** adjust for REV Core Hex
+    // Motors are REV Core Hex motors, REV-41-1300.
+    static final double     COUNTS_PER_MOTOR_REV    = 288 ; // 1120 or 1440 for other popular motors
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ; // No reduction.
 
     // Specific drive train members.
-    static final double     WHEEL_DIAMETER_INCHES   = 5.0 ;     // ** adjust for REV Core Hex
-    static final double     DRIVE_WHEEL_SEPARATION  = 17.0 ;    // ** adjust for REV Core Hex
+    // Wheels are REV Robotics 90mm Traction wheels, REV-41-1354.
+    static final double     WHEEL_DIAMETER_MM   = 90.0 ;
+    static final double     DRIVE_WHEEL_SEPARATION  = 15.2 ;    // Dual 90s on the back
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * Math.PI);
+            (WHEEL_DIAMETER_MM * IN_PER_MM * Math.PI);
 
     // Specific motor and actuator members.
     public DcMotor leftFrontDrive   = null;
     public DcMotor rightFrontDrive  = null;
     public DcMotor leftBackDrive   = null;
     public DcMotor rightBackDrive  = null;
-
+    // Lift and claw members go here.
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -83,27 +93,26 @@ public class Lookeebot_4Wheels
         hwMap = ahwMap;
 
         // Define and Initialize REV Core Hex motors.
-        rightFrontDrive  = hwMap.get(DcMotor.class, "motor2");
-        leftFrontDrive = hwMap.get(DcMotor.class, "motor3");
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD
-
         rightBackDrive  = hwMap.get(DcMotor.class, "motor0");
         leftBackDrive = hwMap.get(DcMotor.class, "motor1");
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD
+        rightFrontDrive  = hwMap.get(DcMotor.class, "motor2");
+        leftFrontDrive = hwMap.get(DcMotor.class, "motor3");
 
-        // Set all motors to zero power
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        // Set all motors to zero power.
         leftFrontDrive.setPower(0);
         rightFrontDrive.setPower(0);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
 
-        // Set both motors to run with encoders.
+        // Set all motors to run with encoders.
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
     }
 }
