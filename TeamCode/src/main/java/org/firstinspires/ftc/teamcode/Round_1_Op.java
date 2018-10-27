@@ -48,19 +48,6 @@ import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.RIGHT;
 import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.UNKNOWN;
 
 
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
 @TeleOp(name="Round 1 Operation", group="Linear Opmode")
 //@Disabled
 public class Round_1_Op extends LinearOpMode {
@@ -70,13 +57,12 @@ public class Round_1_Op extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
-    private GoldAlignDetector locator = null;
+    private GoldMineralDetector locator = null;
     private boolean visible = false;
     private double x = 0.0;
-    final static int MIDPOINT = 312;  // screen midpoint
-    final static int LEFTPOINT = -104;
-    final static int RIGHTPOINT = 104;
-    private boolean done = false;
+    final static int MIDPOINT = 320;  // screen midpoint
+    final static int LEFTPOINT = -106;
+    final static int RIGHTPOINT = 106;
 
     public enum Pos {
         LEFT, MID, RIGHT, UNKNOWN
@@ -90,12 +76,12 @@ public class Round_1_Op extends LinearOpMode {
 
 
         // Init Detector
-        locator = new GoldAlignDetector();
+        locator = new GoldMineralDetector();
         locator.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         locator.useDefaults();
 
         // Optional Tuning
-        locator.alignSize = 610; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
+        locator.alignSize = 640; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
         locator.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
         locator.downscale = 0.4; // How much to downscale the input frames
 
@@ -116,20 +102,20 @@ public class Round_1_Op extends LinearOpMode {
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        //while (opModeIsActive()) {
-        while (!done) {
+        while (opModeIsActive()) {
+        //while (!done) {
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
 
             if(visible) {
                 if (x < LEFTPOINT)
-                    pos = Pos.LEFT;
+                    pos = LEFT;
                 else if ((x >= LEFTPOINT) && (x <= RIGHTPOINT))
-                    pos = Pos.MID;
-                else if (x >= 400)
-                    pos = Pos.RIGHT;
+                    pos = MID;
+                else if (x >= RIGHTPOINT)
+                    pos = RIGHT;
             }   else {
-                pos = Pos.UNKNOWN;
+                pos = UNKNOWN;
             }
 
             switch (pos) {
@@ -155,6 +141,7 @@ public class Round_1_Op extends LinearOpMode {
 
                 default:
                     text = "Unknown";
+                    targetUnknown();
                     break;
 
 
@@ -172,37 +159,17 @@ public class Round_1_Op extends LinearOpMode {
 
     private void targetLeft()  {
 
-        try {
-
-            //handle right hand side target
-            Thread.sleep(3000);
-            done = true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     private void targetRight() {
 
-        try {
-
-            //handle left hand side target
-            Thread.sleep(3000);
-            done = true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     private void targetCenter() {
-        //handle center target
-        try {
-            Thread.sleep(3000);
-            done = true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
     }
 
+    private void targetUnknown() {
 
+    }
 }

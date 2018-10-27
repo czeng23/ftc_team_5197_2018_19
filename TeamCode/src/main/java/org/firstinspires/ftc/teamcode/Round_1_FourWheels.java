@@ -37,19 +37,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.LEFT;
+import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.MID;
+import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.RIGHT;
+import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.UNKNOWN;
 
 @TeleOp(name="Round 1 FourWheels", group="Linear Opmode")
 //@Disabled
@@ -58,19 +49,14 @@ public class Round_1_FourWheels extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-    private GoldAlignDetector locator = null;
+    private GoldMineralDetector locator = null;
+    private Lookeebot_4Wheels robot = null;
+
     private boolean visible = false;
     private double x = 0.0;
-    final static int MIDPOINT = 312;  // screen midpoint
-    final static int LEFTPOINT = -104;
-    final static int RIGHTPOINT = 104;
-    private boolean done = false;
-
-    //init Motors.
-
-    private Lookeebot_4Wheels robot = new Lookeebot_4Wheels();
+    private final static int MIDPOINT = 320;  // screen midpoint
+    private final static int LEFTPOINT = -106;
+    private final static int RIGHTPOINT = 106;
 
     public enum Pos {
         LEFT, MID, RIGHT, UNKNOWN
@@ -79,12 +65,11 @@ public class Round_1_FourWheels extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pos pos = Pos.MID;
+        Pos pos = MID;
         String text = "??";
 
-
         // Init Detector
-        locator = new GoldAlignDetector();
+        locator = new GoldMineralDetector();
         locator.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         locator.useDefaults();
 
@@ -103,12 +88,12 @@ public class Round_1_FourWheels extends LinearOpMode {
         telemetry.addData("locator", "Initialized");
         telemetry.update();
 
-        // Init Motors
+        // Init robot`
 
+        robot = new Lookeebot_4Wheels();
         robot.init(hardwareMap);
 
         // turn on camera
-
         locator.enable();
 
         // Wait for the game to start (driver presses PLAY)
@@ -116,20 +101,20 @@ public class Round_1_FourWheels extends LinearOpMode {
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        //while (opModeIsActive()) {
-        while (!done) {
+        while (opModeIsActive()) {
+        //while (!done) {
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
 
             if(visible) {
                 if (x < LEFTPOINT)
-                    pos = Pos.LEFT;
+                    pos = LEFT;
                 else if ((x >= LEFTPOINT) && (x <= RIGHTPOINT))
-                    pos = Pos.MID;
-                else if (x >= 400)
-                    pos = Pos.RIGHT;
+                    pos = MID;
+                else if (x >= RIGHTPOINT)
+                    pos = RIGHT;
             }   else {
-                pos = Pos.UNKNOWN;
+                pos = UNKNOWN;
             }
 
             switch (pos) {
@@ -155,8 +140,8 @@ public class Round_1_FourWheels extends LinearOpMode {
 
                 default:
                     text = "Unknown";
+                    targetUnknown();
                     break;
-
 
             }
             telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
@@ -171,18 +156,23 @@ public class Round_1_FourWheels extends LinearOpMode {
     }
 
     private void targetLeft()  {
-
         // Lookeebot_4W_TankDrive
+        //stop();
     }
 
     private void targetRight() {
-
         // Lookeebot_4W_TankDrive
+        //stop();
     }
 
     private void targetCenter() {
         // Lookeebot_4W_TankDrive
+        //stop();
     }
 
+    private void targetUnknown() {
+        // Lookeebot_4W_TankDrive
+        //stop();
+    }
 
 }
