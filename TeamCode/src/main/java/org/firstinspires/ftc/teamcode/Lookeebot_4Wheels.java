@@ -51,17 +51,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Lookeebot_4Wheels
 {
-    // Trainerbot specific measurements
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;
+    // Specific measurements for this robot class.
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // ** adjust for REV Core Hex
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // ** adjust for REV Core Hex
 
-    // Trainerbot specific drive train members.
-    static final double     WHEEL_DIAMETER_INCHES   = 5.0 ;
-    static final double     DRIVE_WHEEL_SEPARATION  = 17.0 ;
+    // Specific drive train members.
+    static final double     WHEEL_DIAMETER_INCHES   = 5.0 ;     // ** adjust for REV Core Hex
+    static final double     DRIVE_WHEEL_SEPARATION  = 17.0 ;    // ** adjust for REV Core Hex
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+            (WHEEL_DIAMETER_INCHES * Math.PI);
 
-    // Trainerbot specific motor and actuator members.
+    // Specific motor and actuator members.
     public DcMotor leftFrontDrive   = null;
     public DcMotor rightFrontDrive  = null;
     public DcMotor leftBackDrive   = null;
@@ -82,9 +82,9 @@ public class Lookeebot_4Wheels
         // Save reference to Hardware map
         hwMap = ahwMap;
 
-        // Define and Initialize Tetrix motors
-        rightFrontDrive  = hwMap.get(DcMotor.class, "motor0");
-        leftFrontDrive = hwMap.get(DcMotor.class, "motor1");
+        // Define and Initialize REV Core Hex motors.
+        rightFrontDrive  = hwMap.get(DcMotor.class, "motor2");
+        leftFrontDrive = hwMap.get(DcMotor.class, "motor3");
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD
 
