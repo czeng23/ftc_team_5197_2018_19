@@ -29,8 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.DogeCV;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
@@ -57,22 +55,11 @@ public class REVTrixbotArcadeDrive extends ModularRobotIterativeTeleOp {
 
     /* Declare OpMode members. */
     private REVTrixbot robot       = new REVTrixbot();  // Class created to define a REVTrixbot's hardware
-    private GoldMineralDetector locater = null;
 
-    Pos pos = Pos.MID;
-    String text = "??";
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
-    private boolean visible = false;
-    private double x = 0.0;
-    private final static int MIDPOINT = 320;  // screen midpoint
-    private final static int LEFTPOINT = -106;
-    private final static int RIGHTPOINT = 106;
-    public enum Pos {
-        LEFT, MID, RIGHT, UNKNOWN
-    }
 
     @Override
     public void init() {
@@ -81,33 +68,12 @@ public class REVTrixbotArcadeDrive extends ModularRobotIterativeTeleOp {
          */
         robot.dt.init(hardwareMap);
 
-
-        locater = new GoldMineralDetector();
-        locater.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); //from OpenCV pipeline
-        locater.useDefaults();
-
-        // Optional Tuning
-        locater.alignSize = 640; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
-        locater.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
-        locater.downscale = 0.4; // How much to downscale the input frames
-
-        locater.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
-        //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
-        locater.maxAreaScorer.weight = 0.005;
-
-        locater.ratioScorer.weight = 5;
-        locater.ratioScorer.perfectRatio = 1.0;
-
-
+        robot.goldLocator.init(hardwareMap);
+        telemetry.addData("locator", "Initialized");
 
         // Send telemetry message to signify robot waiting;
-
-        telemetry.addData("locator", "Initialized");
-        telemetry.update();
-
         telemetry.addData("Say", "Hello, Driver!");
 
-        locater.enable();
     }
 
     /*
@@ -133,59 +99,19 @@ public class REVTrixbotArcadeDrive extends ModularRobotIterativeTeleOp {
 
         robot.dt.teleOpArcadeDrive(gamepad1, F310JoystickInputNames.Joysticks.LEFT_STICK);
 
-        telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y);
+        telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y); //TODO make method for Arcade drive for this in drivetrain classes.
         telemetry.addData("right", "%.2f", -gamepad1.right_stick_y);
         telemetry.addData("Rotations", robot.dt.getAverageDTRotation(true));
 
-        visible = locater.isFound();
-        x = locater.getXPosition() - MIDPOINT;
 
-        if(visible) {
-            if (x < LEFTPOINT)
-                pos = Pos.LEFT;
-            else if ((x >= LEFTPOINT) && (x <= RIGHTPOINT))
-                pos = Pos. MID;
-            else if (x >= RIGHTPOINT)
-                pos = Pos.RIGHT;
-        }   else {
-            pos = Pos.UNKNOWN;
-        }
+        telemetry.addData("IsFound" ,robot.goldLocator.isFound()); // Is the bot aligned with the gold mineral
+        telemetry.addData("X Pos" , robot.goldLocator.getXPosition()); // Gold X pos.
+        telemetry.addData("Pos" , robot.goldLocator.getGoldPosForTelemetry()); // Gold X pos.
 
-        switch (pos) {
-            case LEFT:
-                //do left thing
-                text = "LEFT";
-                targetLeft();
+        //telemetry.update();// Gold X pos.
 
-                break;
-
-            case RIGHT:
-                //do left thing
-                text = "RIGHT";
-                targetRight();
-
-                break;
-
-            case MID:
-                //do left thing
-                text = "Mid";
-                targetCenter();
-                break;
-
-            default:
-                text = "Unknown";
-                targetUnknown();
-                break;
-
-        }
-        telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
-        telemetry.addData("X Pos" , x); // Gold X pos.
-        telemetry.addData("Pos" , text); // Gold X pos.
-
-        telemetry.update();// Gold X pos.
-
-        telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
-        telemetry.update();// Gold X pos.
+        //telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
+        //telemetry.update();// Gold X pos.
     }
 
 
@@ -194,25 +120,5 @@ public class REVTrixbotArcadeDrive extends ModularRobotIterativeTeleOp {
      */
     @Override
     public void stop() {
-    }
-
-    private void targetLeft()  {
-        // Lookeebot_4W_TankDrive
-        //stop();
-    }
-
-    private void targetRight() {
-        // Lookeebot_4W_TankDrive
-        //stop();
-    }
-
-    private void targetCenter() {
-        // Lookeebot_4W_TankDrive
-        //stop();
-    }
-
-    private void targetUnknown() {
-        // Lookeebot_4W_TankDrive
-        //stop();
     }
 }

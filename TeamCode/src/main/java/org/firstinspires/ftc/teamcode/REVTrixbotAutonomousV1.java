@@ -8,11 +8,28 @@ public class REVTrixbotAutonomousV1 extends ModularRobotIterativeTeleOp {
 
     public void init(){
         robot.dt.init(hardwareMap);
-        robot.goldAlignmentDetector.init();
+        robot.goldLocator.init(hardwareMap);
     }
 
     @Override
     public void loop() {
+        switch (robot.goldLocator.getGoldPos()){
+            case LEFT:
+                //code to turn left
+                break;
+            case RIGHT:
+                //code
+                break;
+            case MID:
+                //code
+                break;
+            default:
+                //code for out of frame
+                break;
+
+        }
+
+
 
     }
 }

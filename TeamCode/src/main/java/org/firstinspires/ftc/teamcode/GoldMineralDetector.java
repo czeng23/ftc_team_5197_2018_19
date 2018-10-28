@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.DogeCVDetector;
 import com.disnodeteam.dogecv.filters.DogeCVColorFilter;
@@ -7,6 +8,7 @@ import com.disnodeteam.dogecv.filters.LeviColorFilter;
 import com.disnodeteam.dogecv.scoring.MaxAreaScorer;
 import com.disnodeteam.dogecv.scoring.PerfectAreaScorer;
 import com.disnodeteam.dogecv.scoring.RatioScorer;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -23,7 +25,19 @@ import java.util.List;
  * Created by Victo on 9/17/2018.
  */
 
-public class GoldMineralDetector extends DogeCVDetector {
+public class GoldMineralDetector extends DogeCVDetector implements FTCModularizableSystems{
+
+    //Position enum
+
+    private Pos pos = Pos.MID;
+
+    //TelemetryPositionText
+    private String TelemetryPosText = "??";
+
+    //Thresholds to correlate screen points to position enums
+    private final static int MIDPOINT = 320;  // screen midpoint
+    private final static int LEFTPOINT = -106;
+    private final static int RIGHTPOINT = 106;
 
     // Defining Mats to be used.
     private Mat displayMat = new Mat(); // Display debug info to the screen (this is what is returned)
@@ -39,16 +53,18 @@ public class GoldMineralDetector extends DogeCVDetector {
     // Detector settings
     public boolean debugAlignment = true; // Show debug lines to show alignment settings
     public double alignPosOffset  = 0;    // How far from center frame is aligned
-    public double alignSize       = 100;  // How wide is the margin of error for alignment
+    public double alignSize       = 640;  // Used to be 100. How wide is the margin of error for alignment
 
     public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
+    // Can also be PERFECT_AREA
+    //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
 
 
     //Create the default filters and scorers
     public DogeCVColorFilter yellowFilter      = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW); //Default Yellow filter
 
-    public RatioScorer       ratioScorer       = new RatioScorer(1.0, 3);          // Used to find perfect squares
-    public MaxAreaScorer     maxAreaScorer     = new MaxAreaScorer( 0.01);                    // Used to find largest objects
+    public RatioScorer       ratioScorer       = new RatioScorer(1.0, 5);          // Used to find perfect squares
+    public MaxAreaScorer     maxAreaScorer     = new MaxAreaScorer( 0.005);                    // Used to find largest objects
     public PerfectAreaScorer perfectAreaScorer = new PerfectAreaScorer(5000,0.05); // Used to find objects near a tuned area value
 
     /**
@@ -57,6 +73,14 @@ public class GoldMineralDetector extends DogeCVDetector {
     public GoldMineralDetector() {
         super();
         detectorName = "Gold Align Detector"; // Set the detector name
+        downscale = 0.4; //edit downscale of DogeCVDetector
+
+    }
+
+    public void init(HardwareMap ahwMap){
+        super.init(ahwMap.appContext, CameraViewDisplay.getInstance());
+        useDefaults();
+        enable();
     }
 
 
@@ -187,8 +211,8 @@ public class GoldMineralDetector extends DogeCVDetector {
      * @return last x-position in screen pixels of gold element
      */
     public double getXPosition(){
-        return goldXPos;
-    }
+        return goldXPos-MIDPOINT;
+    } //account for midpoint
 
     /**
      * Returns if a gold mineral is being tracked/detected
@@ -196,5 +220,41 @@ public class GoldMineralDetector extends DogeCVDetector {
      */
     public boolean isFound() {
         return found;
+    }
+
+    public void updateGoldPos(){
+        double x = getXPosition();
+        if(isFound()){
+            if (x < LEFTPOINT) {
+                pos = Pos.LEFT;
+                TelemetryPosText = "LEFT";
+            }
+
+            else if ((x >= LEFTPOINT) && (x <= RIGHTPOINT)) {
+                pos = Pos.MID;
+                TelemetryPosText = "Mid";
+            }
+
+            else if (x >= RIGHTPOINT) {
+                pos = Pos.RIGHT;
+                TelemetryPosText = "Right";
+            }
+
+        }
+        else{ //mineral not in FOV
+            pos = Pos.UNKNOWN;
+            TelemetryPosText = "Unknown";
+        }
+
+    }
+
+    public Pos getGoldPos(){
+        updateGoldPos();
+        return pos;
+    }
+
+    public String getGoldPosForTelemetry(){
+        updateGoldPos();
+        return TelemetryPosText;
     }
 }
