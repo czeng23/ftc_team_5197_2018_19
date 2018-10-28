@@ -82,5 +82,15 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         RearLeftDrive.setPower(leftPower);
         RearRightDrive.setPower(rightPower);
     }
+
+    public int getAverageDTRotation(boolean countStoppedDTSide) { //TODO Work on getting encoder readins
+        if (countStoppedDTSide) {
+            return (FrontLeftDrive.getCurrentPosition() + FrontRightDrive.getCurrentPosition() +
+                    RearLeftDrive.getCurrentPosition() + RearRightDrive.getCurrentPosition()) / 4;
+        } else {
+            return -1;
+
+        }
+    }
 }
 

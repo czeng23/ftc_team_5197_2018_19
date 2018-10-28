@@ -51,9 +51,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *
  */
 
-@TeleOp(name="REVTrixbot: Teleop Tank", group="REVTrixbot")
+@TeleOp(name="REVTrixbot: Teleop Arcade", group="REVTrixbot")
 //@Disabled
-public class REVTrixbotTankDrive extends ModularRobotIterativeTeleOp {
+public class REVTrixbotArcadeDrive extends ModularRobotIterativeTeleOp {
 
     /* Declare OpMode members. */
     private REVTrixbot robot       = new REVTrixbot();  // Class created to define a REVTrixbot's hardware
@@ -83,7 +83,7 @@ public class REVTrixbotTankDrive extends ModularRobotIterativeTeleOp {
 
 
         locater = new GoldMineralDetector();
-        locater.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        locater.init(hardwareMap.appContext, CameraViewDisplay.getInstance()); //from OpenCV pipeline
         locater.useDefaults();
 
         // Optional Tuning
@@ -131,7 +131,7 @@ public class REVTrixbotTankDrive extends ModularRobotIterativeTeleOp {
     public void loop() {
 
 
-        robot.dt.teleOpTankDrive(gamepad1);
+        robot.dt.teleOpArcadeDrive(gamepad1, F310JoystickInputNames.Joysticks.LEFT_STICK);
 
         telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y);
         telemetry.addData("right", "%.2f", -gamepad1.right_stick_y);
