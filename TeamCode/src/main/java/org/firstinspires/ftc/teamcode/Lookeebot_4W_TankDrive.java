@@ -25,77 +25,81 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Version history
- * 0.1  Bob, adapted from Team 7195.
  */
 
-//package org.firstinspires.ftc.teamcode.dogecv;
 package org.firstinspires.ftc.teamcode;
 
-import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
-import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+/**
+ * This file provides basic Teleop driving for a Lookeebot. It is modified and simplified
+ * from the FtcRobotController external sample PushbotTeleopTankIterative. The code is structured
+ * as an Iterative OpMode. The arm and claw operation in the sample is not implemented here.
+ *
+ * Tank drive means the gamepad left stick controls the left motor, and the right stick controls
+ * the right motor.
+ *
+ * This OpMode uses the Lookeebot hardware class to define the motors on the robot. There are no
+ * servos or sensors, except for the camera on the Robot Controller phone.
+ * All access is managed through the Lookeebot class.
+ */
 
-@TeleOp(name="GoldAlign Example", group="DogeCV")
+@TeleOp(name="Lookeebot: 4 Wheels", group="Lookeebot")
+//@Disabled
+public class Lookeebot_4W_TankDrive extends OpMode {
 
-public class GoldAlignExample extends OpMode
-{
-    private GoldAlignDetector detector;
+    /* Declare OpMode members. */
+    private Lookeebot_4Wheels robot       = new Lookeebot_4Wheels();  // Class created to define a Trainerbot's hardware
 
-
+    /*
+     * Code to run ONCE when the driver hits INIT
+     */
     @Override
     public void init() {
-        telemetry.addData("Status", "DogeCV 2018.0 - Gold Align Example");
+        /* Initialize the hardware variables.
+         * The init() method of the hardware class does all the work here
+         */
+        robot.init(hardwareMap);
 
-        detector = new GoldAlignDetector();
-        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
-        detector.useDefaults();
-
-        // Optional Tuning
-        detector.alignSize = 610; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
-        detector.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
-        detector.downscale = 0.4; // How much to downscale the input frames
-
-        detector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
-        //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
-        detector.maxAreaScorer.weight = 0.005;
-
-        detector.ratioScorer.weight = 5;
-        detector.ratioScorer.perfectRatio = 1.0;
-
-        detector.enable();
-
-
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Say", "Hello Driver");    //
     }
 
-    @Override
-    public void init_loop() {
-    }
+    /*
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
+    //@Override
+    //public void init_loop() {
+    //}
 
     /*
      * Code to run ONCE when the driver hits PLAY
      */
     @Override
     public void start() {
-
     }
 
-
+    /*
+     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+     */
     @Override
     public void loop() {
-        boolean detected = true;
-        double x = detector.getXPosition() - 300.0;
-        if(! detector.getAligned() ){
-            x = -99999.9;
-            detected = false;
-        }
-        telemetry.addData("IsAligned" ,detected); // Is the bot aligned with the gold mineral
-        telemetry.addData("X Pos" , x); // Gold X pos.
+        double left;
+        double right;
+
+        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
+        left = -gamepad1.left_stick_y;
+        right = -gamepad1.right_stick_y;
+
+        robot.leftFrontDrive.setPower(left);
+        robot.rightFrontDrive.setPower(right);
+        robot.leftBackDrive.setPower(left);
+        robot.rightBackDrive.setPower(right);
+
+
+        telemetry.addData("left",  "%.2f", left);
+        telemetry.addData("right", "%.2f", right);
     }
 
     /*
@@ -103,7 +107,5 @@ public class GoldAlignExample extends OpMode
      */
     @Override
     public void stop() {
-        detector.disable();
     }
-
 }
