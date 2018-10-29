@@ -30,6 +30,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * This is NOT an opmode.
@@ -71,5 +73,27 @@ public class REVTrixbot extends GenericFTCRobot
             WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
+
+    class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
+        private Servo unPurposedServo = null;
+        private DcMotor armCountrolmotor  = null;
+        private DcMotor onTheArmmotor = null;
+        public void init(HardwareMap ahwMap){
+
+            armCountrolmotor = ahwMap.get(DcMotor.class, "motor0");
+            onTheArmmotor = ahwMap.get(DcMotor.class, "motor1");
+
+            armCountrolmotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if
+            onTheArmmotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
+
+            // Set all motors to zero power
+            armCountrolmotor.setPower(0);
+            onTheArmmotor.setPower(0);
+
+            // Set both motors to run with encoders.
+            armCountrolmotor.setMode(RUNMODE);
+            onTheArmmotor.setMode(RUNMODE);
+        }
+    }
 
 }
