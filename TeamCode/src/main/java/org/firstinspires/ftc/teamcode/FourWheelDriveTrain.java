@@ -44,11 +44,20 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         RearLeftDrive.setPower(0);
         RearRightDrive.setPower(0);
 
+        if(RUNMODE == DcMotor.RunMode.RUN_USING_ENCODER){  //stops motors until mode changed; so do before setting runmode to RUN_USING_Encoder
+            FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            FrontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            RearLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            RearRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+
         // Set both motors to run with encoders.
         FrontLeftDrive.setMode(RUNMODE);
         FrontRightDrive.setMode(RUNMODE);
         RearLeftDrive.setMode(RUNMODE);
         RearRightDrive.setMode(RUNMODE);
+
+
     }
 
     public void teleOpTankDrive(Gamepad driverGamepad){

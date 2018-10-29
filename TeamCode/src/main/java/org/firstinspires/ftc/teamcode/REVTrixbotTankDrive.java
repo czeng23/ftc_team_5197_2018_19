@@ -49,7 +49,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  *
  */
 
-@TeleOp(name="REVTrixbot: Teleop Arcade", group="REVTrixbot")
+@TeleOp(name="REVTrixbot: Teleop Tank", group="REVTrixbot")
 //@Disabled
 public class REVTrixbotTankDrive extends ModularRobotIterativeTeleOp {
 
