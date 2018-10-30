@@ -82,22 +82,18 @@ public class Calibrate_for_REVTrixbot extends LinearOpMode {
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
-        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.dt.init(hardwareMap);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d",
-                          robot.leftDrive.getCurrentPosition(),
-                          robot.rightDrive.getCurrentPosition());
+                          robot.dt.getAverageLeftDTPosition(),
+                          robot.dt.getAverageRightDTPosition());
+        //TODO work on accounting for individual drive motors
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -156,7 +152,7 @@ public class Calibrate_for_REVTrixbot extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                   (REVTrixbot.getRunTime() < timeoutS) &&
+                   (robot.runTime.seconds() < timeoutS) &&
                    (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
 
                 // Display it for the driver.
@@ -216,7 +212,7 @@ public class Calibrate_for_REVTrixbot extends LinearOpMode {
             // Degenerate cases: Î¸ = 0, R = 0, R = Â±d/2, R = âˆž.
             // While we are still active, and there is time left, and both motors are running.
             while (opModeIsActive() &&
-              (runtime.seconds() < LONG_TIME) &&
+              (robot.runTime.seconds() < LONG_TIME) &&
               (robot.leftDrive.isBusy() && robot.rightDrive.isBusy())) {
 
                 // Display it for the driver.
