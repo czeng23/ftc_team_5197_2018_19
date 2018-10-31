@@ -101,7 +101,7 @@ public class REVTrixbotTankDrive extends ModularRobotIterativeTeleOp {
 
         telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y);
         telemetry.addData("right", "%.2f", -gamepad1.right_stick_y);
-        telemetry.addData("Rotations", robot.dt.getAverageDTPosition(true));
+        telemetry.addData("Rotations", robot.dt.getCurrentAverageDTPosition(true));
 
 
         telemetry.addData("IsFound" ,robot.goldLocator.isFound()); // Is the bot aligned with the gold mineral

@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -91,8 +90,8 @@ public class Calibrate_for_REVTrixbot extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d",
-                          robot.dt.getAverageLeftDTPosition(),
-                          robot.dt.getAverageRightDTPosition());
+                          robot.dt.getCurrentAverageLeftDTPosition(),
+                          robot.dt.getCurrentAverageRightDTPosition());
         //TODO work on accounting for individual drive motors
         telemetry.update();
 
@@ -130,9 +129,9 @@ public class Calibrate_for_REVTrixbot extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = robot.leftDrive.getCurrentPosition() + (int)
-              (leftInches * robot.COUNTS_PER_INCH);
-            newRightTarget = robot.rightDrive.getCurrentPosition() + (int)(rightInches * robot.COUNTS_PER_INCH);
+            newLeftTarget = robot.dt.getCurrentAverageLeftDTPosition() + (int)
+              (leftInches * robot.dt.COUNTS_PER_INCH);
+            newRightTarget = robot.dt.getCurrentAverageRightDTPosition() + (int)(rightInches * robot.dt.COUNTS_PER_INCH);
             robot.leftDrive.setTargetPosition(newLeftTarget);
             robot.rightDrive.setTargetPosition(newRightTarget);
 

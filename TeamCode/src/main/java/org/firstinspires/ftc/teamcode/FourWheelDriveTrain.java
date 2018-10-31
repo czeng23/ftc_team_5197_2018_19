@@ -22,6 +22,14 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
     }
     */
 
+    private void setModeOfAllMotors(final DcMotor.RunMode runMode) {
+        FrontLeftDrive.setMode(runMode);
+        FrontRightDrive.setMode(runMode);
+        RearLeftDrive.setMode(runMode);
+        RearRightDrive.setMode(runMode);
+
+    }
+
     public void init(HardwareMap ahwMap){
 
         FrontLeftDrive = ahwMap.get(DcMotor.class, "motor0");
@@ -45,18 +53,11 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         RearRightDrive.setPower(0);
 
         if(RUNMODE == DcMotor.RunMode.RUN_USING_ENCODER){  //stops motors until mode changed; so do before setting runmode to RUN_USING_Encoder
-            FrontLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            FrontRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            RearLeftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            RearRightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            setModeOfAllMotors(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
 
         // Set both motors to run with encoders.
-        FrontLeftDrive.setMode(RUNMODE);
-        FrontRightDrive.setMode(RUNMODE);
-        RearLeftDrive.setMode(RUNMODE);
-        RearRightDrive.setMode(RUNMODE);
-
+        setModeOfAllMotors(RUNMODE);
 
     }
 
@@ -91,8 +92,30 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         RearLeftDrive.setPower(leftPower);
         RearRightDrive.setPower(rightPower);
     }
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget = 0;
+        int newRightTarget = 0;
 
-    public int getAverageDTPosition(boolean countStoppedDTSides) { //TODO Work on getting encoder readins //
+        newLeftTarget = getCurrentAverageLeftDTPosition() + (int)
+                (leftInches * COUNTS_PER_INCH);
+
+        newRightTarget = getCurrentAverageRightDTPosition() + (int)(rightInches * COUNTS_PER_INCH);
+
+        FrontLeftDrive.setTargetPosition(newLeftTarget);
+        RearLeftDrive.setTargetPosition(newLeftTarget);
+
+        FrontRightDrive.setTargetPosition(newLeftTarget);
+        RearRightDrive.setTargetPosition(newRightTarget);
+
+        setModeOfAllMotors(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+
+    //Methods to access drivetrain motor values
+
+    public int getCurrentAverageDTPosition(boolean countStoppedDTSides) { //TODO Work on getting encoder readins //
         boolean leftDriveMoving = FrontLeftDrive.getPowerFloat() && RearLeftDrive.getPowerFloat(); //TODO see if this is the correct method to determine if a motor is moving
         boolean rightDriveMoving = FrontRightDrive.getPowerFloat() && RearRightDrive.getPowerFloat();
         if(RUNMODE == DcMotor.RunMode.RUN_USING_ENCODER){
@@ -112,42 +135,42 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         return -1; //cannot use method when they are no encoders used.
     }
 
-    public int getAverageLeftDTPosition() { //TODO Work on getting encoder readins //
+    public int getCurrentAverageLeftDTPosition() { //TODO Work on getting encoder readins //
         if(RUNMODE == DcMotor.RunMode.RUN_USING_ENCODER){
             return (FrontLeftDrive.getCurrentPosition() + RearLeftDrive.getCurrentPosition())/2;
         }
         return -1; //cannot use method when they are no encoders used.
     }
 
-    public int getAverageRightDTPosition() { //TODO Work on getting encoder readins //
+    public int getCurrentAverageRightDTPosition() { //TODO Work on getting encoder readins //
         if(RUNMODE == DcMotor.RunMode.RUN_USING_ENCODER){
             return (FrontRightDrive.getCurrentPosition() + RearRightDrive.getCurrentPosition())/2;
         }
         return -1; //cannot use method when they are no encoders used.
     }
 
-    public int getFrontLeftDrivePosition(){
+    public int getCurrentFrontLeftDrivePosition(){
         if(RUNMODE == DcMotor.RunMode.RUN_USING_ENCODER){
             return FrontLeftDrive.getCurrentPosition();
         }
         return -1; //cannot use method when they are no encoders used.
     }
 
-    public int getFrontRightDrivePosition(){
+    public int getCurrentFrontRightDrivePosition(){
         if(RUNMODE == DcMotor.RunMode.RUN_USING_ENCODER){
             return FrontRightDrive.getCurrentPosition();
         }
         return -1; //cannot use method when they are no encoders used.
     }
 
-    public int getRearLeftDrivePosition(){
+    public int getCurrentRearLeftDrivePosition(){
         if(RUNMODE == DcMotor.RunMode.RUN_USING_ENCODER){
             return RearLeftDrive.getCurrentPosition();
         }
         return -1; //cannot use method when they are no encoders used.
     }
 
-    public int getRearRightDrivePosition(){
+    public int getCurrentRearRightDrivePosition(){
         if(RUNMODE == DcMotor.RunMode.RUN_USING_ENCODER){
             return RearRightDrive.getCurrentPosition();
         }
