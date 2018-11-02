@@ -61,7 +61,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *
  */
 
-@Autonomous(name="Calibrate", group="REVTrixbot")
+//@Autonomous(name="Calibrate", group="REVTrixbot")
 //@Disabled
 public class Calibrate_for_REVTrixbot extends LinearOpMode {
   // If timeouts are to be avoided, check with
@@ -90,8 +90,8 @@ public class Calibrate_for_REVTrixbot extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d",
-                          robot.dt.getCurrentAverageLeftDTPosition(),
-                          robot.dt.getCurrentAverageRightDTPosition());
+                          robot.dt.getCurrentLeftDrivePosition(),
+                          robot.dt.getCurrentRightDrivePosition());
         //TODO work on accounting for individual drive motors
         telemetry.update();
 
@@ -105,8 +105,8 @@ public class Calibrate_for_REVTrixbot extends LinearOpMode {
         // Turn right
         //encoderDrive(TURN_SPEED,   12, -12, 4.0);
         // Run curving to right, one radian
-        turnAngleRadiusDrive(DRIVE_SPEED, 1.00, 40);
-
+        robot.dt.encoderDrive(DRIVE_SPEED, 48, 48);
+        robot.dt.turnAngleRadiusDrive(DRIVE_SPEED, 1.00, 40);
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -119,6 +119,8 @@ public class Calibrate_for_REVTrixbot extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
+
+    /*
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
@@ -231,4 +233,5 @@ public class Calibrate_for_REVTrixbot extends LinearOpMode {
             robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
+    */
 }

@@ -52,7 +52,11 @@ import com.qualcomm.robotcore.hardware.Servo;
  * v 0.1    10/11/18 jmr primitive version, just enough to test the drive train.
  *          No class hierarchy, no initialization or run mode methods. Yet.
  *
- * v 0.2    (In development) Use of modular code for four wheel driveetrain.
+ * v 0.2    (In development) Use of modular code for four wheel drivetrain.
+ *
+ * v 0.3    (In development) REVTrix has one port controlling each side of the DT now. Therefore, it
+ *           now uses a TwoWheelDriveTrain although each of the four wheels are powered.
+ *
  */
 
 public class REVTrixbot extends GenericFTCRobot
@@ -69,7 +73,7 @@ public class REVTrixbot extends GenericFTCRobot
     private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18
 
 
-    FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
+    TwoWheelDriveTrain dt = new TwoWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
             WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
@@ -95,5 +99,7 @@ public class REVTrixbot extends GenericFTCRobot
             onTheArmmotor.setMode(RUNMODE);
         }
     }
+
+
 
 }

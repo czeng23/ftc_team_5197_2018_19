@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="REVTrixbot: Teleop Arcade", group="REVTrixbot")
 //@Disabled
-public class REVTrixbotArcadeDrive extends ModularRobotIterativeTeleOp {
+public class REVTrixbotArcadeDrive extends ModularRobotIterativeOpMode {
 
     /* Declare OpMode members. */
     private REVTrixbot robot       = new REVTrixbot();  // Class created to define a REVTrixbot's hardware

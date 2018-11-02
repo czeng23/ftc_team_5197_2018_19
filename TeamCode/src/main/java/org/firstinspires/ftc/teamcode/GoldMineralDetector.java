@@ -23,6 +23,15 @@ import java.util.List;
 
 /**
  * Created by Victo on 9/17/2018.
+ *
+ * This is NOT an opmode. It is a software service for detecting Gold Minerals. It can give a Pos, or goldXPos
+ * that can be used to get a robot to align itself with a gold mineral and push it off. Thus this code is being
+ * used in the Rover Ruckus Season
+ *
+ * Version History
+ * ======= =======
+ * v 0.1   09/17/18 Created by Victo
+ * v 0.2   11/02/18 added this Javadoc
  */
 
 public class GoldMineralDetector extends DogeCVDetector implements FTCModularizableSystems{

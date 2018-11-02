@@ -3,6 +3,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+/**
+ * This is NOT an opmode.
+ *
+ * This a parent abstract class for drivetrains. It contains fields used by all drivetraains
+ *
+ * Version history
+ * ======= ========
+ * v 0.1 11/02/18 @Lorenzo Pedroza. Added this Javadoc
+ */
+
 public abstract class ModularDriveTrain implements FTCModularDrivetrainDrivable {
     // drivetrain specific measurements
     protected final double     COUNTS_PER_MOTOR_REV;
