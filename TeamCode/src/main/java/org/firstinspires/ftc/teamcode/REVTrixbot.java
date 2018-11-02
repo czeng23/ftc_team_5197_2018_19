@@ -30,10 +30,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import static java.lang.Math.*;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * This is NOT an opmode.
@@ -53,64 +51,49 @@ import static java.lang.Math.*;
  * ======= ======
  * v 0.1    10/11/18 jmr primitive version, just enough to test the drive train.
  *          No class hierarchy, no initialization or run mode methods. Yet.
+ *
+ * v 0.2    (In development) Use of modular code for four wheel driveetrain.
  */
 
-public class REVTrixbot
+public class REVTrixbot extends GenericFTCRobot
 {
     // REVTrixbot specific measurements
     // ** to do: calibration.
-    static final double     COUNTS_PER_MOTOR_REV    = 288 ;
+    private static final double     COUNTS_PER_MOTOR_REV    = 288 ;
+    private static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;
 
     // REVTrixbot specific drive train members.
     // ** to do: check these for REVTrixbot dimensions.
-    static final double     WHEEL_DIAMETER_INCHES   = 3.5 ; // 90mm Traction Wheel
-    static final double     DRIVE_WHEEL_SEPARATION  = 15.0 ;
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV) /
-            (WHEEL_DIAMETER_INCHES * Math.PI);
+    private static final double     WHEEL_DIAMETER_INCHES   = 3.5 ; // 90mm Traction Wheel
+    private static final double     DRIVE_WHEEL_SEPARATION  = 15.0 ;
+    private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18
 
-    // Trainerbot specific motor and actuator members.
-    public DcMotor leftFrontDrive   = null;
-    public DcMotor rightFrontDrive  = null;
-    public DcMotor leftRearDrive    = null;
-    public DcMotor rightRearDrive   = null;
 
-    /* local OpMode members. */
-    HardwareMap hwMap               =  null;
-    private ElapsedTime period      = new ElapsedTime();
+    FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
+            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
 
-    /* Constructor */
-    public REVTrixbot(){
+    GoldMineralDetector goldLocator = new GoldMineralDetector();
 
+    class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
+        private Servo unPurposedServo = null;
+        private DcMotor armCountrolmotor  = null;
+        private DcMotor onTheArmmotor = null;
+        public void init(HardwareMap ahwMap){
+
+            armCountrolmotor = ahwMap.get(DcMotor.class, "motor0");
+            onTheArmmotor = ahwMap.get(DcMotor.class, "motor1");
+
+            armCountrolmotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if
+            onTheArmmotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
+
+            // Set all motors to zero power
+            armCountrolmotor.setPower(0);
+            onTheArmmotor.setPower(0);
+
+            // Set both motors to run with encoders.
+            armCountrolmotor.setMode(RUNMODE);
+            onTheArmmotor.setMode(RUNMODE);
+        }
     }
 
-    /* Initialize standard Hardware interfaces */
-    public void init(HardwareMap ahwMap) {
-        // Save reference to Hardware map
-        hwMap = ahwMap;
-
-        // Define and Initialize Tetrix motors
-        leftFrontDrive  = hwMap.get(DcMotor.class, "motor0");
-        rightFrontDrive = hwMap.get(DcMotor.class, "motor1");
-        leftRearDrive = hwMap.get(DcMotor.class, "motor2");
-        rightRearDrive = hwMap.get(DcMotor.class, "motor3");
-
-        // Define motor directions so all drive robot in same direction
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftRearDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightRearDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        // Power down all motors. They may coast or stop immediately,
-        // depending on the RunMode.
-        leftFrontDrive.setPower(0);
-        rightFrontDrive.setPower(0);
-        leftRearDrive.setPower(0);
-        rightRearDrive.setPower(0);
-
-        // Set all motors to run with encoders.
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRearDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
 }

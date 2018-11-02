@@ -29,33 +29,38 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
- * This file provides basic Teleop driving for a Lookeebot. It is modified and simplified
+ * This file provides basic Teleop driving for a REVTrixbot. It is modified and simplified
  * from the FtcRobotController external sample PushbotTeleopTankIterative. The code is structured
  * as an Iterative OpMode. The arm and claw operation in the sample is not implemented here.
  *
- * Tank drive means the gamepad left stick controls the left motor, and the right stick controls
- * the right motor.
+ * Tank drive means the gamepad left stick controls the left motors, and the right stick controls
+ * the right motors.
  *
- * This OpMode uses the Lookeebot hardware class to define the motors on the robot. There are no
- * servos or sensors, except for the camera on the Robot Controller phone.
- * All access is managed through the Lookeebot class.
+ * This OpMode uses the REVTrixbot hardware class to define the devices on the robot.
+ * All device access is managed through the REVTrix class.
+ *
+ * Version history
+ * ======= ======
+ * v 0.1    10/11/18 jmr primitive version, just enough to test the drive train. Does not extend
+ *          GenericRobot class.
+ *
  */
 
-@TeleOp(name="Lookeebot: Teleop Tank", group="Lookeebot")
+@TeleOp(name="REVTrixbot: Teleop Arcade", group="REVTrixbot")
 //@Disabled
-public class LookeebotTankDrive extends ModularRobotIterativeTeleOp {
+public class REVTrixbotArcadeDrive extends ModularRobotIterativeTeleOp {
 
     /* Declare OpMode members. */
-    private Lookeebot robot       = new Lookeebot();  // Class created to define a Trainerbot's hardware
+    private REVTrixbot robot       = new REVTrixbot();  // Class created to define a REVTrixbot's hardware
+
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
+
     @Override
     public void init() {
         /* Initialize the hardware variables.
@@ -63,16 +68,20 @@ public class LookeebotTankDrive extends ModularRobotIterativeTeleOp {
          */
         robot.dt.init(hardwareMap);
 
+        robot.goldLocator.init(hardwareMap);
+        telemetry.addData("locator", "Initialized");
+
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Hello Driver");    //
+        telemetry.addData("Say", "Hello, Driver!");
+
     }
 
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
-    //@Override
-    //public void init_loop() {
-    //}
+    @Override
+    public void init_loop() {
+    }
 
     /*
      * Code to run ONCE when the driver hits PLAY
@@ -87,11 +96,24 @@ public class LookeebotTankDrive extends ModularRobotIterativeTeleOp {
     @Override
     public void loop() {
 
-        robot.dt.teleOpTankDrive(gamepad1);
 
-        telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y);
+        robot.dt.teleOpArcadeDrive(gamepad1, F310JoystickInputNames.Joysticks.LEFT_STICK);
+
+        telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y); //TODO make method for Arcade drive for this in drivetrain classes.
         telemetry.addData("right", "%.2f", -gamepad1.right_stick_y);
+        telemetry.addData("Rotations", robot.dt.getCurrentAverageDTPosition(true));
+
+
+        telemetry.addData("IsFound" ,robot.goldLocator.isFound()); // Is the bot aligned with the gold mineral
+        telemetry.addData("X Pos" , robot.goldLocator.getXPosition()); // Gold X pos.
+        telemetry.addData("Pos" , robot.goldLocator.getGoldPosForTelemetry()); // Gold X pos.
+
+        //telemetry.update();// Gold X pos.
+
+        //telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
+        //telemetry.update();// Gold X pos.
     }
+
 
     /*
      * Code to run ONCE after the driver hits STOP

@@ -25,72 +25,73 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Version history
+ * 0.1  Bob, adapted from Team 7195.
+ * 0.2  jmr, changed to report position of detected Gold Mineral with respect
+ *      to center of screen.
  */
 
+//package org.firstinspires.ftc.teamcode.dogecv;
 package org.firstinspires.ftc.teamcode;
 
+import com.disnodeteam.dogecv.CameraViewDisplay;
+import com.disnodeteam.dogecv.DogeCV;
+import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-/**
- * This file provides basic Teleop driving for a Lookeebot. It is modified and simplified
- * from the FtcRobotController external sample PushbotTeleopTankIterative. The code is structured
- * as an Iterative OpMode. The arm and claw operation in the sample is not implemented here.
- *
- * Tank drive means the gamepad left stick controls the left motor, and the right stick controls
- * the right motor.
- *
- * This OpMode uses the Lookeebot hardware class to define the motors on the robot. There are no
- * servos or sensors, except for the camera on the Robot Controller phone.
- * All access is managed through the Lookeebot class.
- */
 
-@TeleOp(name="Lookeebot: Teleop Tank", group="Lookeebot")
-//@Disabled
-public class LookeebotTankDrive extends ModularRobotIterativeTeleOp {
+@TeleOp(name="GoldAlign With X Error", group="DogeCV")
 
-    /* Declare OpMode members. */
-    private Lookeebot robot       = new Lookeebot();  // Class created to define a Trainerbot's hardware
+public class GoldAlignErrorX extends OpMode
+{
+    private GoldAlignDetector detector;
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+
     @Override
     public void init() {
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
-        robot.dt.init(hardwareMap);
+        telemetry.addData("Status", "DogeCV 2018.0 - Gold Alignment X error");
 
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Hello Driver");    //
+        detector = new GoldAlignDetector();
+        detector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        detector.useDefaults();
+
+        // Optional Tuning
+        detector.alignSize = 100; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
+        detector.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
+        detector.downscale = 0.4; // How much to downscale the input frames
+
+        detector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
+        //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
+        detector.maxAreaScorer.weight = 0.005;
+
+        detector.ratioScorer.weight = 5;
+        detector.ratioScorer.perfectRatio = 1.0;
+
+        detector.enable();
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    //@Override
-    //public void init_loop() {
-    //}
+    @Override
+    public void init_loop() {
+
+    }
 
     /*
      * Code to run ONCE when the driver hits PLAY
      */
     @Override
     public void start() {
+
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
+
     @Override
     public void loop() {
-
-        robot.dt.teleOpTankDrive(gamepad1);
-
-        telemetry.addData("left",  "%.2f", -gamepad1.left_stick_y);
-        telemetry.addData("right", "%.2f", -gamepad1.right_stick_y);
+        // Is the bot aligned with the gold mineral?
+        telemetry.addData("IsAligned" , detector.getAligned());
+        // Report screen pixels from center of detected Gold from center of screen.
+        telemetry.addData("X Error" , detector.getXPosition());
     }
 
     /*
@@ -98,5 +99,6 @@ public class LookeebotTankDrive extends ModularRobotIterativeTeleOp {
      */
     @Override
     public void stop() {
+        detector.disable();
     }
 }

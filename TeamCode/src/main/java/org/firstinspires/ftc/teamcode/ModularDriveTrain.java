@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public abstract class ModularDriveTrain implements FTCModularizableHardware {
+public abstract class ModularDriveTrain implements FTCModularDrivetrainDrivable {
     // drivetrain specific measurements
     protected final double     COUNTS_PER_MOTOR_REV;
     protected final double     DRIVE_GEAR_REDUCTION;
@@ -13,6 +13,10 @@ public abstract class ModularDriveTrain implements FTCModularizableHardware {
     protected final double     DRIVE_WHEEL_SEPARATION;
     protected final DcMotor.RunMode RUNMODE; //made protected so child classes (actual drivetrains, can access these constants)
     protected final double     COUNTS_PER_INCH;
+
+    protected float leftPower = 0f; //TODO have methods for encoders?
+    protected float rightPower = 0f;
+
 
     //abstract public void init(HardwareMap ahwMap);
     //abstract public void driveLinearInches(double power, double distanceInInches);
