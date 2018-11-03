@@ -108,14 +108,12 @@ public class Round_1_Op extends LinearOpMode {
             x = locator.getXPosition() - MIDPOINT;
 
             if(visible) {
-                if (x < LEFTPOINT)
-                    pos = LEFT;
-                else if ((x >= LEFTPOINT) && (x <= RIGHTPOINT))
+                if (x < MIDPOINT)
                     pos = MID;
-                else if (x >= RIGHTPOINT)
+                else if (x >= MIDPOINT)
                     pos = RIGHT;
             }   else {
-                pos = UNKNOWN;
+                pos = LEFT;
             }
 
             switch (pos) {
