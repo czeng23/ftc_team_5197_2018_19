@@ -48,7 +48,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @TeleOp(name="Lookeebot: Teleop Tank", group="Lookeebot")
 //@Disabled
-public class LookeebotTankDrive extends ModularRobotIterativeTeleOp {
+public class LookeebotTankDrive extends ModularRobotIterativeOpMode {
 
     /* Declare OpMode members. */
     private Lookeebot robot       = new Lookeebot();  // Class created to define a Trainerbot's hardware
