@@ -108,6 +108,8 @@ public class Round_1_FourWheels extends LinearOpMode {
         // turn on camera
         locator.enable();
 
+        done = false;
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
