@@ -3,6 +3,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+/**
+ * This is NOT and opmode
+ *
+ * This is the code for a modular robot part, a drivetrain. A drive train object can be
+ * added to a robot class if needed, just like a sensor or software service object.
+ * The code below is for a four wheel drive train. It is almost identical to a two drive train
+ * class, the only difference being it uses four motors.
+ *
+ * Version history
+ * ======  =======
+ * v 0.1    11/02/18 @Lorenzo Pedroza. Implemented methods for endoderDrive and turnAngleRadiusDrive, and accessor methods for encoder counts. Also added method for turning a radius //TODO Test them
+ */
+
 public class FourWheelDriveTrain extends ModularDriveTrain{
     // REVTrix specific motor and actuator members.
     private DcMotor FrontLeftDrive   = null;
@@ -10,17 +23,9 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
     private DcMotor RearLeftDrive    = null;
     private DcMotor RearRightDrive   = null;
 
-    //current motor power
-
-
     FourWheelDriveTrain(double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION, double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION, DcMotor.RunMode RUNMODE){
         super(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION, WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
     }
-
-    /*public void DriveForwardInches(){
-
-    }
-    */
 
     private void setModeOfAllMotors(final DcMotor.RunMode runMode) {
         FrontLeftDrive.setMode(runMode);
@@ -93,8 +98,11 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         RearRightDrive.setPower(rightPower);
     }
     public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
+                             double leftInches, double rightInches) {
+        if (RUNMODE != DcMotor.RunMode.RUN_USING_ENCODER){
+            return; //Cannot use method if no encoders.
+        }
+
         int newLeftTarget = 0;
         int newRightTarget = 0;
 
@@ -106,32 +114,109 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         FrontLeftDrive.setTargetPosition(newLeftTarget);
         RearLeftDrive.setTargetPosition(newLeftTarget);
 
-        FrontRightDrive.setTargetPosition(newLeftTarget);
+        FrontRightDrive.setTargetPosition(newRightTarget);
         RearRightDrive.setTargetPosition(newRightTarget);
 
         setModeOfAllMotors(DcMotor.RunMode.RUN_TO_POSITION);
 
+
+        FrontLeftDrive.setPower(Math.abs(speed));
+        RearLeftDrive.setPower(Math.abs(speed));
+        FrontRightDrive.setPower(Math.abs(speed));
+        RearRightDrive.setPower(Math.abs(speed));
+
+        //Set motor speed to zero
+        FrontLeftDrive.setPower(0);
+        RearLeftDrive.setPower(0);
+        FrontRightDrive.setPower(0);
+        RearRightDrive.setPower(0);
+
+        while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
+
+        // Turn off RUN_TO_POSITION
+        setModeOfAllMotors(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
 
-    public void powerDrive(double leftPower, double rightPower) {
+    public void powerDrive(double leftPower, double rightPower){
         FrontLeftDrive.setPower(leftPower);
-        FrontRightDrive.setPower(rightPower);
         RearLeftDrive.setPower(leftPower);
+        FrontRightDrive.setPower(rightPower);
         RearRightDrive.setPower(rightPower);
     }
 
+    public void driveStraight(double speed, double inches){
+        encoderDrive(speed, inches, inches);
+    } //Maybe don't need this
+
+    public void turnAngleRadiusDrive (double speed, double angleRadians, double radius){
+
+        if (RUNMODE != DcMotor.RunMode.RUN_USING_ENCODER){
+            return; //Cannot use method if no encoders.
+        }
+
+        double leftArc = (radius - DRIVE_WHEEL_SEPARATION/2.0)*angleRadians;
+        double rightArc = (radius + DRIVE_WHEEL_SEPARATION/2.0)*angleRadians;
+
+        double leftSpeed = speed * (radius - DRIVE_WHEEL_SEPARATION/2.0)/
+                (radius + DRIVE_WHEEL_SEPARATION);
+        double rightSpeed = speed;
+
+        int newLeftTarget;
+        int newRightTartget;
+
+        setModeOfAllMotors(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        newLeftTarget = (int) (leftArc * COUNTS_PER_INCH);
+        newRightTartget = (int) (rightArc * COUNTS_PER_INCH);
+
+        FrontLeftDrive.setTargetPosition(newLeftTarget);
+        RearLeftDrive.setTargetPosition(newLeftTarget);
+        FrontRightDrive.setTargetPosition(newRightTartget);
+        FrontLeftDrive.setTargetPosition(newRightTartget);
+
+        setModeOfAllMotors(DcMotor.RunMode.RUN_TO_POSITION);
+
+        FrontLeftDrive.setPower(Math.abs(leftSpeed));
+        RearLeftDrive.setPower(Math.abs(leftSpeed));
+        FrontRightDrive.setPower(Math.abs(rightSpeed));
+        RearRightDrive.setPower(Math.abs(rightSpeed));
+
+        //Stop All motors
+
+        FrontLeftDrive.setTargetPosition(0);
+        FrontRightDrive.setTargetPosition(0);
+        RearLeftDrive.setTargetPosition(0);
+        RearRightDrive.setTargetPosition(0);
+
+        setModeOfAllMotors(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void turnRadius(double speed, double radius){
+        //Calculate how much faster one side must rotate than other
+        double leftSpeed = speed * (radius - DRIVE_WHEEL_SEPARATION/2.0)/
+                (radius + DRIVE_WHEEL_SEPARATION);
+        double rightSpeed = speed;
+
+        FrontLeftDrive.setPower(Math.abs(leftSpeed));
+        RearLeftDrive.setPower(Math.abs(leftSpeed));
+        FrontRightDrive.setPower(Math.abs(rightSpeed));
+        RearRightDrive.setPower(Math.abs(rightSpeed));
+    }
+
+
     //Methods to access drivetrain motor values
-    @Override
+
     public int getCurrentAverageDTPosition(boolean countStoppedDTSides) { //TODO Work on getting encoder readins //
         boolean leftDriveMoving = FrontLeftDrive.getPowerFloat() && RearLeftDrive.getPowerFloat(); //TODO see if this is the correct method to determine if a motor is moving
         boolean rightDriveMoving = FrontRightDrive.getPowerFloat() && RearRightDrive.getPowerFloat();
         if(RUNMODE == DcMotor.RunMode.RUN_USING_ENCODER){
             if (!countStoppedDTSides && !(leftDriveMoving && rightDriveMoving)) {//don't return these values if left and right motors already moving
                 if (leftDriveMoving){
-                    return (FrontLeftDrive.getCurrentPosition() + RearLeftDrive.getCurrentPosition())/2;
+                    return getCurrentAverageLeftDTPosition();
                 }
                 else if(rightDriveMoving){
-                    return (FrontRightDrive.getCurrentPosition() + RearRightDrive.getCurrentPosition())/2;
+                    return getCurrentAverageRightDTPosition();
                 }
             }
             return (FrontLeftDrive.getCurrentPosition() + FrontRightDrive.getCurrentPosition() +
