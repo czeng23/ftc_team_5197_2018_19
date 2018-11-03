@@ -50,13 +50,24 @@ public class Round_1_FourWheels extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private GoldMineralDetector locator = null;
-    private Lookeebot_4Wheels robot = null;
+    //private Lookeebot_4Wheels robot = null;
+    private FourWheelDriveTrain robot = null;
 
     private boolean visible = false;
+    private boolean done = false;
     private double x = 0.0;
     private final static int MIDPOINT = 320;  // screen midpoint
     private final static int LEFTPOINT = -106;
     private final static int RIGHTPOINT = 106;
+
+
+    static final double     COUNTS_PER_MOTOR_REV    = 4 ;
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;
+
+    // REVTrix specific drive train members.
+    static final double     WHEEL_DIAMETER_INCHES   = 3.5 ; //estimate
+    static final double     DRIVE_WHEEL_SEPARATION  = 28.0 ; //estimate
+    static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
     public enum Pos {
         LEFT, MID, RIGHT, UNKNOWN
@@ -88,33 +99,35 @@ public class Round_1_FourWheels extends LinearOpMode {
         telemetry.addData("locator", "Initialized");
         telemetry.update();
 
-        // Init robot`
+        // Init robot
 
-        robot = new Lookeebot_4Wheels();
+        robot = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
+                WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
         robot.init(hardwareMap);
 
         // turn on camera
         locator.enable();
+
+        done = false;
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-        //while (!done) {
+        while (opModeIsActive() && !done) {
+        // lineup the camera on the right side
+        // right 2 balls are visible
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
 
             if(visible) {
-                if (x < LEFTPOINT)
-                    pos = LEFT;
-                else if ((x >= LEFTPOINT) && (x <= RIGHTPOINT))
+                if (x < MIDPOINT)
                     pos = MID;
-                else if (x >= RIGHTPOINT)
+                else if (x >= MIDPOINT)
                     pos = RIGHT;
             }   else {
-                pos = UNKNOWN;
+                pos = LEFT;
             }
 
             switch (pos) {
@@ -156,23 +169,24 @@ public class Round_1_FourWheels extends LinearOpMode {
     }
 
     private void targetLeft()  {
-        // Lookeebot_4W_TankDrive
-        //stop();
+        // build a profile to handle target on left
+        robot.encoderDrive(-1, 0.1, 2.1, -1);
+        done = true;  // end the run
     }
 
     private void targetRight() {
-        // Lookeebot_4W_TankDrive
-        //stop();
+        // build a profile to handle target on right
+        done = true;  // end the run
     }
 
     private void targetCenter() {
-        // Lookeebot_4W_TankDrive
-        //stop();
+        // build a profile to handle target on center
+        done = true;  // end the run
     }
 
     private void targetUnknown() {
-        // Lookeebot_4W_TankDrive
-        //stop();
+        // Should not get here
+        done = true;  // end the run
     }
 
 }
