@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * Version history
  * ======  =======
  * v 0.1    11/02/18 @Lorenzo Pedroza. Implemented methods for endoderDrive and turnAngleRadiusDrive, and accessor methods for encoder counts. Also added method for turning a radius //TODO Test them
+ * v 0.3    11/03/18 @Lorenzo Pedroza  Fixed encoderDrive
  */
 
 public class FourWheelDriveTrain extends ModularDriveTrain{
@@ -125,13 +126,13 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         FrontRightDrive.setPower(Math.abs(speed));
         RearRightDrive.setPower(Math.abs(speed));
 
+        while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
+
         //Set motor speed to zero
         FrontLeftDrive.setPower(0);
         RearLeftDrive.setPower(0);
         FrontRightDrive.setPower(0);
         RearRightDrive.setPower(0);
-
-        while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
 
         // Turn off RUN_TO_POSITION
         setModeOfAllMotors(DcMotor.RunMode.RUN_USING_ENCODER);
