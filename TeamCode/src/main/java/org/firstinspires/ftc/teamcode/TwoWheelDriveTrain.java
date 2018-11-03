@@ -106,6 +106,11 @@ public class TwoWheelDriveTrain extends ModularDriveTrain {
 
     }
 
+    public void powerDrive(double leftPower, double rightPower){
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
+    }
+
     public void turnAngleRadiusDrive (double speed, double angleRadians, double radius){
         if (RUNMODE != DcMotor.RunMode.RUN_USING_ENCODER){
             return; //Cannot use method if no encoders.

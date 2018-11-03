@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="REVTrixbot: Teleop Tank", group="REVTrixbot")
 //@Disabled
-public class REVTrixbotTankDrive extends ModularRobotIterativeTeleOp {
+public class REVTrixbotTankDrive extends ModularRobotIterativeOpMode{
 
     /* Declare OpMode members. */
     private REVTrixbot robot       = new REVTrixbot();  // Class created to define a REVTrixbot's hardware

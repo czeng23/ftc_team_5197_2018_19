@@ -23,8 +23,10 @@ public class REVTrix_Callibrate_Iterative extends ModularRobotIterativeOpMode {
         robot.dt.init(hardwareMap);
     }
 
+
     @Override
     public void loop() {
-        robot.dt.encoderDrive(DRIVE_SPEED, 48, 48);
+        robot.dt.encoderDrive(DRIVE_SPEED, 12, 12);
+        robot.dt.encoderDrive(0, 12, 12);
     }
 }

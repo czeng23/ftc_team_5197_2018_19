@@ -114,7 +114,7 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         FrontLeftDrive.setTargetPosition(newLeftTarget);
         RearLeftDrive.setTargetPosition(newLeftTarget);
 
-        FrontRightDrive.setTargetPosition(newLeftTarget);
+        FrontRightDrive.setTargetPosition(newRightTarget);
         RearRightDrive.setTargetPosition(newRightTarget);
 
         setModeOfAllMotors(DcMotor.RunMode.RUN_TO_POSITION);
@@ -131,9 +131,18 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         FrontRightDrive.setPower(0);
         RearRightDrive.setPower(0);
 
+        while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
+
         // Turn off RUN_TO_POSITION
         setModeOfAllMotors(DcMotor.RunMode.RUN_USING_ENCODER);
 
+    }
+
+    public void powerDrive(double leftPower, double rightPower){
+        FrontLeftDrive.setPower(leftPower);
+        RearLeftDrive.setPower(leftPower);
+        FrontRightDrive.setPower(rightPower);
+        RearRightDrive.setPower(rightPower);
     }
 
     public void driveStraight(double speed, double inches){

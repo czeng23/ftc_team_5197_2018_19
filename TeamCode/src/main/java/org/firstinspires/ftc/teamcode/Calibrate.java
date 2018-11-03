@@ -62,7 +62,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 
-@Autonomous(name="Calibrate", group="Trainerbot")
+@Autonomous(name="CalibrateTrainerbot", group="Trainerbot")
 //@Disabled
 public class Calibrate extends LinearOpMode {
   // If timeouts are to be avoided, check with
