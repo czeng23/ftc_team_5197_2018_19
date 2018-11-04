@@ -126,6 +126,7 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         FrontRightDrive.setPower(Math.abs(speed));
         RearRightDrive.setPower(Math.abs(speed));
 
+        //Wait for motors to move to position
         while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
 
         //Set motor speed to zero
@@ -182,6 +183,9 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         RearLeftDrive.setPower(Math.abs(leftSpeed));
         FrontRightDrive.setPower(Math.abs(rightSpeed));
         RearRightDrive.setPower(Math.abs(rightSpeed));
+
+        //Wait for motors to move to position
+        while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
 
         //Stop All motors
 

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 /**
  * This is NOT and opmode
@@ -14,6 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * Version history
  * ======  =======
  * v 0.1    11/02/18 @Lorenzo Pedroza. Implemented methods for endoderDrive and turnAngleRadiusDrive, and accessor methods for encoder counts //TODO Test them
+ * v 0.5    11/03/18 @Lorenzo Pedroza. Added while statements in encoder methods to allow motors to move to position
  */
 
 
@@ -97,6 +99,9 @@ public class TwoWheelDriveTrain extends ModularDriveTrain {
         leftDrive.setPower(Math.abs(speed));
         rightDrive.setPower(Math.abs(speed));
 
+        //Wait for motors to move to position
+        while(leftDrive.isBusy() && rightDrive.isBusy()){}
+
         //Set motor speed to zero
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -138,6 +143,9 @@ public class TwoWheelDriveTrain extends ModularDriveTrain {
 
         leftDrive.setPower(Math.abs(leftPower));
         rightDrive.setPower(Math.abs(rightPower));
+
+        //Wait for motors to move to position
+        while(leftDrive.isBusy() && rightDrive.isBusy()){}
 
         //Stop all motors
         leftDrive.setTargetPosition(0);
