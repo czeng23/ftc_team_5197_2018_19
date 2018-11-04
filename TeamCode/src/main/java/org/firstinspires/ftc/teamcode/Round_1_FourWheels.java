@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -42,7 +43,7 @@ import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.MID;
 import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.RIGHT;
 import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.UNKNOWN;
 
-@TeleOp(name="Round 1 FourWheels", group="Linear Opmode")
+@Autonomous(name="Round 1 FourWheels", group="Linear Opmode")
 //@Disabled
 public class Round_1_FourWheels extends LinearOpMode {
 
@@ -51,12 +52,12 @@ public class Round_1_FourWheels extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private GoldMineralDetector locator = null;
     //private Lookeebot_4Wheels robot = null;
-    private FourWheelDriveTrain robot = null;
+    private REVTrixbot robot = new REVTrixbot();
 
     private boolean visible = false;
     private boolean done = false;
     private double x = 0.0;
-    private final static int MIDPOINT = 320;  // screen midpoint
+    private final static int MIDPOINT = 0;  // screen midpoint
     private final static int LEFTPOINT = -106;
     private final static int RIGHTPOINT = 106;
 
@@ -101,9 +102,7 @@ public class Round_1_FourWheels extends LinearOpMode {
 
         // Init robot
 
-        robot = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
-                WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
-        robot.init(hardwareMap);
+        robot.dt.init(hardwareMap);
 
         // turn on camera
         locator.enable();
@@ -118,13 +117,14 @@ public class Round_1_FourWheels extends LinearOpMode {
         while (opModeIsActive() && !done) {
         // lineup the camera on the right side
         // right 2 balls are visible
+            sleep(1000);
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
 
             if(visible) {
-                if (x < MIDPOINT)
+                if (x < 0)
                     pos = MID;
-                else if (x >= MIDPOINT)
+                else if (x >= 0)
                     pos = RIGHT;
             }   else {
                 pos = LEFT;
@@ -170,17 +170,31 @@ public class Round_1_FourWheels extends LinearOpMode {
 
     private void targetLeft()  {
         // build a profile to handle target on left
-        robot.encoderDrive(-1, 0.1, 2.1, -1);
+        robot.dt.encoderDrive(1, -10, 10);
+        sleep(1000);// wait for the previous motion to complete
+        robot.dt.encoderDrive(-1, -30, -30);
+        sleep(1500);
         done = true;  // end the run
+
     }
 
     private void targetRight() {
+
         // build a profile to handle target on right
+        robot.dt.encoderDrive(1, 4, -4);
+        sleep(1000);// wait for the previous motion to complete
+        robot.dt.encoderDrive(-1, -35, -35);
+        sleep(1500);
         done = true;  // end the run
     }
 
     private void targetCenter() {
-        // build a profile to handle target on center
+
+        // build a profile to handle target on right
+        robot.dt.encoderDrive(1, -5, 5);
+        sleep(1000);// wait for the previous motion to complete
+        robot.dt.encoderDrive(-1, -30, -30);
+        sleep(1500);
         done = true;  // end the run
     }
 
