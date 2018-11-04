@@ -60,7 +60,7 @@ public class Round_1_Op extends LinearOpMode {
     private GoldMineralDetector locator = null;
     private boolean visible = false;
     private double x = 0.0;
-    final static int MIDPOINT = 320;  // screen midpoint
+    final static int MIDPOINT = 0;  // screen midpoint
     final static int LEFTPOINT = -106;
     final static int RIGHTPOINT = 106;
 
@@ -105,12 +105,12 @@ public class Round_1_Op extends LinearOpMode {
         while (opModeIsActive()) {
         //while (!done) {
             visible = locator.isFound();
-            x = locator.getXPosition() - MIDPOINT;
+            x = locator.getXPosition() -MIDPOINT;
 
             if(visible) {
-                if (x < MIDPOINT)
+                if (x < 0)
                     pos = MID;
-                else if (x >= MIDPOINT)
+                else if (x >= 0)
                     pos = RIGHT;
             }   else {
                 pos = LEFT;
