@@ -16,15 +16,22 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
  * ======  =======
  * v 0.1    11/02/18 @Lorenzo Pedroza. Implemented methods for endoderDrive and turnAngleRadiusDrive, and accessor methods for encoder counts //TODO Test them
  * v 0.5    11/03/18 @Lorenzo Pedroza. Added while statements in encoder methods to allow motors to move to position
+ * v 0.6    11/07/18 Ir is now easier to give motor unique names; names are now required parameter
  */
 
 
 public class TwoWheelDriveTrain extends ModularDriveTrain {
     private DcMotor leftDrive   = null;
     private DcMotor rightDrive  = null;
+    private String leftMotorName = null;
+    private String rightMotorName = null;
 
-    TwoWheelDriveTrain(double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION, double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION, DcMotor.RunMode RUNMODE){
+    TwoWheelDriveTrain(double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION,
+                       double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION,
+                       DcMotor.RunMode RUNMODE, String leftMotorName, String rightMotorName){
         super(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION, WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
+        this.leftMotorName = leftMotorName;
+        this.rightMotorName = rightMotorName;
     }
 
     private void setModeOfAllMotors(final DcMotor.RunMode runMode) {

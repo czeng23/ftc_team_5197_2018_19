@@ -24,7 +24,10 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
     private DcMotor RearLeftDrive    = null;
     private DcMotor RearRightDrive   = null;
 
-    FourWheelDriveTrain(double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION, double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION, DcMotor.RunMode RUNMODE){
+    FourWheelDriveTrain(double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION,
+                        double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION,
+                        DcMotor.RunMode RUNMODE, String frontLeftMotorName, String frontRightMotorName,
+                        String rearLeftMotorName, String rearRightMotorName){
         super(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION, WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
     }
 

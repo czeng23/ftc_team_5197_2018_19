@@ -73,19 +73,20 @@ public class REVTrixbot extends GenericFTCRobot
     private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18
 
 
-    FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
-            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
+    TwoWheelDriveTrain dt = new TwoWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
+            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "motor0", "motor1");
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
     class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
-        private Servo unPurposedServo = null;
+        private Servo gripper = null;
         private DcMotor armCountrolmotor  = null;
         private DcMotor onTheArmmotor = null;
         public void init(HardwareMap ahwMap){
 
-            armCountrolmotor = ahwMap.get(DcMotor.class, "motor0");
-            onTheArmmotor = ahwMap.get(DcMotor.class, "motor1");
+            gripper = ahwMap.get(Servo.class, "servo0");
+            armCountrolmotor = ahwMap.get(DcMotor.class, "motor3");
+            onTheArmmotor = ahwMap.get(DcMotor.class, "motor4");
 
             armCountrolmotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if
             onTheArmmotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
@@ -99,6 +100,7 @@ public class REVTrixbot extends GenericFTCRobot
             onTheArmmotor.setMode(RUNMODE);
         }
     }
+
 
 
 

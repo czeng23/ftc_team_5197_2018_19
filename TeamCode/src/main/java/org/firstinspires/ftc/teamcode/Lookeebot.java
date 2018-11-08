@@ -61,7 +61,6 @@ public class Lookeebot extends GenericFTCRobot
     static final DcMotor.RunMode     RUNMODE = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
 
     TwoWheelDriveTrain dt = new TwoWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
-            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
-
-
+            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "motor0",
+            "motor1");
 }
