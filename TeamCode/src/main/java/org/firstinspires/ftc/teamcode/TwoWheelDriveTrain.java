@@ -40,8 +40,8 @@ public class TwoWheelDriveTrain extends ModularDriveTrain {
     }
 
     public void init(HardwareMap ahwMap){
-        leftDrive = ahwMap.get(DcMotor.class, "motor0");
-        rightDrive = ahwMap.get(DcMotor.class, "motor1");
+        leftDrive = ahwMap.get(DcMotor.class, leftMotorName);
+        rightDrive = ahwMap.get(DcMotor.class, rightMotorName);
 
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
