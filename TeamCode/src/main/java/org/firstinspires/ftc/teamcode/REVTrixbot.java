@@ -78,26 +78,45 @@ public class REVTrixbot extends GenericFTCRobot
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
-    class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
+    private class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
-        private DcMotor armCountrolmotor  = null;
-        private DcMotor onTheArmmotor = null;
+        private final int GRIPPER_CLOSED_DEGREES;
+        private final int GRIPPER_OPEN_DEGREES;
+
+        private DcMotor armLiftermotor = null;
+        private final int LIFTER_ERECT = 0;
+        private final int LIFTER_STOWED = 0;
+
+        private DcMotor linearActuatorMotor = null;
+        private final int LA_EXTENDED = 0;
+        private final int LA_RETRACTED = 0;
+
+        Lifter(final int GRIPPER_CLOSED_DEGREES, final int GRIPPER_OPEN_DEGREES, final int LIFTER_ERECT,
+               final int LIFTER_STOWED, final int LA_EXTENDED, final int LA_RETRACTED, final DcMotor.RunMode RUNMODE){
+            this.GRIPPER_CLOSED_DEGREES = GRIPPER_CLOSED_DEGREES;
+            this.GRIPPER_OPEN_DEGREES = GRIPPER_OPEN_DEGREES;
+
+
+        }
+
         public void init(HardwareMap ahwMap){
 
             gripper = ahwMap.get(Servo.class, "servo0");
-            armCountrolmotor = ahwMap.get(DcMotor.class, "motor3");
-            onTheArmmotor = ahwMap.get(DcMotor.class, "motor4");
+            armLiftermotor = ahwMap.get(DcMotor.class, "motor3");
+            linearActuatorMotor = ahwMap.get(DcMotor.class, "motor4");
 
-            armCountrolmotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if
-            onTheArmmotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
+            armLiftermotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if
+            linearActuatorMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
 
             // Set all motors to zero power
-            armCountrolmotor.setPower(0);
-            onTheArmmotor.setPower(0);
+            armLiftermotor.setPower(0);
+            linearActuatorMotor.setPower(0);
 
             // Set both motors to run with encoders.
-            armCountrolmotor.setMode(RUNMODE);
-            onTheArmmotor.setMode(RUNMODE);
+            armLiftermotor.setMode(RUNMODE);
+            linearActuatorMotor.setMode(RUNMODE);
+
+
         }
     }
 
