@@ -31,21 +31,14 @@ package org.firstinspires.ftc.teamcode;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.LEFT;
-import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.MID;
-import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.RIGHT;
-import static org.firstinspires.ftc.teamcode.Round_1_FourWheels.Pos.UNKNOWN;
-
-@Autonomous(name="Round 1 FourWheels", group="Linear Opmode")
+@Autonomous(name="Round 1 FourWheels Facing Crater", group="Linear Opmode")
 //@Disabled
-public class Round_1_FourWheels extends LinearOpMode {
+public class Round_1_FourWheels_Crater extends LinearOpMode {
 
 
     // Declare OpMode members.
@@ -77,7 +70,7 @@ public class Round_1_FourWheels extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        Pos pos = MID;
+        Pos pos = Pos.MID;
         String text = "??";
 
         // Init Detector
@@ -123,11 +116,11 @@ public class Round_1_FourWheels extends LinearOpMode {
 
             if(visible) {
                 if (x < 0)
-                    pos = MID;
+                    pos = Pos.LEFT;
                 else if (x >= 0)
-                    pos = RIGHT;
+                    pos = Pos.MID;
             }   else {
-                pos = LEFT;
+                pos = Pos.RIGHT;
             }
 
             switch (pos) {
@@ -174,6 +167,7 @@ public class Round_1_FourWheels extends LinearOpMode {
         sleep(1000);// wait for the previous motion to complete
         robot.dt.encoderDrive(-1, -30, -30);
         sleep(1500);
+
         done = true;  // end the run
 
     }
@@ -181,20 +175,47 @@ public class Round_1_FourWheels extends LinearOpMode {
     private void targetRight() {
 
         // build a profile to handle target on right
-        robot.dt.encoderDrive(1, 4, -4);
+        robot.dt.encoderDrive(1, 8, -8);
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -35, -35);
+        robot.dt.encoderDrive(-1, -13, -13);
         sleep(1500);
+        /*
+        robot.dt.encoderDrive(-1, -15.0, 15.0);
+        sleep(2000);
+        robot.dt.encoderDrive(-1, -20, -20);
+        sleep(1000);
+        robot.dt.encoderDrive(1, 70, 70);
+        */
         done = true;  // end the run
     }
 
     private void targetCenter() {
 
         // build a profile to handle target on right
-        robot.dt.encoderDrive(1, -5, 5);
-        sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -30, -30);
+        robot.dt.encoderDrive(-1, -19, -19);
         sleep(1500);
+        robot.dt.encoderDrive(1, 6, -6);
+        sleep(1000);
+        robot.dt.encoderDrive(-1, -5, -5);
+        sleep(1000);// wait for the previous motion to complete
+        robot.dt.encoderDrive(-1, 5,5);
+        sleep(1000);
+        robot.dt.encoderDrive(1,-6,6);
+        sleep(1000);
+        robot.dt.encoderDrive(1,3,3);
+
+        /*
+        robot.dt.encoderDrive(1, 4, -4);
+        sleep(1000);
+        robot.dt.encoderDrive(1, -35, -35);
+        sleep(1000);
+        robot.dt.encoderDrive(1, 1.5, 1.5);
+        sleep(1000);
+        robot.dt.encoderDrive(1, -11, 11);
+        sleep(1000);
+        robot.dt.encoderDrive(1, 72, 72);
+        */
+
         done = true;  // end the run
     }
 
