@@ -78,29 +78,37 @@ public class REVTrixbot extends GenericFTCRobot
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
+    Lifter mineralArm = new Lifter(0, 180, 0, 180,
+            0, 100 );
+
     private class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
         private final int GRIPPER_CLOSED_DEGREES;
         private final int GRIPPER_OPEN_DEGREES;
 
         private DcMotor armLiftermotor = null;
-        private final int LIFTER_ERECT = 0;
-        private final int LIFTER_STOWED = 0;
+        private final int LIFTER_STOWED_ROTATIONS;
+        private final int LIFTER_ERECT_ROTATIONS;
 
         private DcMotor linearActuatorMotor = null;
-        private final int LA_EXTENDED = 0;
-        private final int LA_RETRACTED = 0;
+        private final int LA_RETRACRED_ROTATIONS;
+        private final int LA_EXTENDED_ROTATIONS;
 
-        Lifter(final int GRIPPER_CLOSED_DEGREES, final int GRIPPER_OPEN_DEGREES, final int LIFTER_ERECT,
-               final int LIFTER_STOWED, final int LA_EXTENDED, final int LA_RETRACTED, final DcMotor.RunMode RUNMODE){
+        Lifter(final int GRIPPER_CLOSED_DEGREES, final int GRIPPER_OPEN_DEGREES, final int LIFTER_STOWED_ROTATIONS,
+               final int LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS){
             this.GRIPPER_CLOSED_DEGREES = GRIPPER_CLOSED_DEGREES;
             this.GRIPPER_OPEN_DEGREES = GRIPPER_OPEN_DEGREES;
+            this.LIFTER_STOWED_ROTATIONS = LIFTER_STOWED_ROTATIONS;
+            this.LIFTER_ERECT_ROTATIONS = LIFTER_ERECT_ROTATIONS;
+            this.LA_RETRACRED_ROTATIONS = LA_RETRACTED_ROTATIONS;
+            this.LA_EXTENDED_ROTATIONS = LA_EXTENDED_ROTATIONS;
+
+
 
 
         }
 
         public void init(HardwareMap ahwMap){
-
             gripper = ahwMap.get(Servo.class, "servo0");
             armLiftermotor = ahwMap.get(DcMotor.class, "motor3");
             linearActuatorMotor = ahwMap.get(DcMotor.class, "motor4");
@@ -111,12 +119,13 @@ public class REVTrixbot extends GenericFTCRobot
             // Set all motors to zero power
             armLiftermotor.setPower(0);
             linearActuatorMotor.setPower(0);
+            gripper.setPosition(GRIPPER_CLOSED_DEGREES); //move servo to closed position
 
             // Set both motors to run with encoders.
-            armLiftermotor.setMode(RUNMODE);
-            linearActuatorMotor.setMode(RUNMODE);
-
-
+            armLiftermotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            linearActuatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            armLiftermotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            linearActuatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 
