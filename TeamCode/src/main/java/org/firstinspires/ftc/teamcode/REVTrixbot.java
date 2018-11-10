@@ -73,8 +73,9 @@ public class REVTrixbot extends GenericFTCRobot
     private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18
 
 
-    TwoWheelDriveTrain dt = new TwoWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
-            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "motor0", "motor1");
+    FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
+            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "motor0", "motor1",
+            "motor2", "motor3");
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
