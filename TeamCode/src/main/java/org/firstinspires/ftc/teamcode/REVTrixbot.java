@@ -73,32 +73,62 @@ public class REVTrixbot extends GenericFTCRobot
     private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18
 
 
-    FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
-            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
+    TwoWheelDriveTrain dt = new TwoWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
+            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "motor0", "motor1");
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
-    class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
-        private Servo unPurposedServo = null;
-        private DcMotor armCountrolmotor  = null;
-        private DcMotor onTheArmmotor = null;
+    Lifter mineralArm = new Lifter(0, 180, 0, 180,
+            0, 100 );
+
+    private class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
+        private Servo gripper = null;
+        private final int GRIPPER_CLOSED_DEGREES;
+        private final int GRIPPER_OPEN_DEGREES;
+
+        private DcMotor armLiftermotor = null;
+        private final int LIFTER_STOWED_ROTATIONS;
+        private final int LIFTER_ERECT_ROTATIONS;
+
+        private DcMotor linearActuatorMotor = null;
+        private final int LA_RETRACRED_ROTATIONS;
+        private final int LA_EXTENDED_ROTATIONS;
+
+        Lifter(final int GRIPPER_CLOSED_DEGREES, final int GRIPPER_OPEN_DEGREES, final int LIFTER_STOWED_ROTATIONS,
+               final int LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS){
+            this.GRIPPER_CLOSED_DEGREES = GRIPPER_CLOSED_DEGREES;
+            this.GRIPPER_OPEN_DEGREES = GRIPPER_OPEN_DEGREES;
+            this.LIFTER_STOWED_ROTATIONS = LIFTER_STOWED_ROTATIONS;
+            this.LIFTER_ERECT_ROTATIONS = LIFTER_ERECT_ROTATIONS;
+            this.LA_RETRACRED_ROTATIONS = LA_RETRACTED_ROTATIONS;
+            this.LA_EXTENDED_ROTATIONS = LA_EXTENDED_ROTATIONS;
+
+
+
+
+        }
+
         public void init(HardwareMap ahwMap){
+            gripper = ahwMap.get(Servo.class, "servo0");
+            armLiftermotor = ahwMap.get(DcMotor.class, "motor3");
+            linearActuatorMotor = ahwMap.get(DcMotor.class, "motor4");
 
-            armCountrolmotor = ahwMap.get(DcMotor.class, "motor0");
-            onTheArmmotor = ahwMap.get(DcMotor.class, "motor1");
-
-            armCountrolmotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if
-            onTheArmmotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
+            armLiftermotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if
+            linearActuatorMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
 
             // Set all motors to zero power
-            armCountrolmotor.setPower(0);
-            onTheArmmotor.setPower(0);
+            armLiftermotor.setPower(0);
+            linearActuatorMotor.setPower(0);
+            gripper.setPosition(GRIPPER_CLOSED_DEGREES); //move servo to closed position
 
             // Set both motors to run with encoders.
-            armCountrolmotor.setMode(RUNMODE);
-            onTheArmmotor.setMode(RUNMODE);
+            armLiftermotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            linearActuatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            armLiftermotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            linearActuatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
+
 
 
 

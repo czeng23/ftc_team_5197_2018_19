@@ -78,11 +78,11 @@ public class GoldDetector extends DogeCVDetector {
 
         // Current result
         Rect bestRect = null;
-        double bestDiffrence = Double.MAX_VALUE; // MAX_VALUE since less diffrence = better
+        double bestDiffrence = Double.MAX_VALUE; // MAX_VALUE since less difference = better
 
         // Loop through the contours and score them, searching for the best result
         for(MatOfPoint cont : contoursYellow){
-            double score = calculateScore(cont); // Get the diffrence score using the scoring API
+            double score = calculateScore(cont); // Get the difference score using the scoring API
 
             // Get bounding rect of contour
             Rect rect = Imgproc.boundingRect(cont);
@@ -120,7 +120,7 @@ public class GoldDetector extends DogeCVDetector {
     public void useDefaults() {
         addScorer(ratioScorer);
 
-        // Add diffrent scoreres depending on the selected mode
+        // Add different scoreres depending on the selected mode
         if(areaScoringMethod == DogeCV.AreaScoringMethod.MAX_AREA){
             addScorer(maxAreaScorer);
         }

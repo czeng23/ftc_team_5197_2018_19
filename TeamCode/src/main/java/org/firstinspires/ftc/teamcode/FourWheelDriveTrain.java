@@ -24,8 +24,20 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
     private DcMotor RearLeftDrive    = null;
     private DcMotor RearRightDrive   = null;
 
-    FourWheelDriveTrain(double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION, double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION, DcMotor.RunMode RUNMODE){
+    private String frontLeftMotorName = null;
+    private String frontRightMotorName = null;
+    private String rearLeftMotorName = null;
+    private String rearRightMotorName = null;
+
+    FourWheelDriveTrain(double COUNTS_PER_MOTOR_REV, double DRIVE_GEAR_REDUCTION,
+                        double WHEEL_DIAMETER_INCHES, double DRIVE_WHEEL_SEPARATION,
+                        DcMotor.RunMode RUNMODE, String frontLeftMotorName, String frontRightMotorName,
+                        String rearLeftMotorName, String rearRightMotorName){
         super(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION, WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE);
+        this.frontLeftMotorName = frontLeftMotorName;
+        this.frontRightMotorName = frontRightMotorName;
+        this.rearLeftMotorName = rearLeftMotorName;
+        this.rearRightMotorName = rearRightMotorName;
     }
 
     private void setModeOfAllMotors(final DcMotor.RunMode runMode) {
@@ -38,10 +50,10 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
 
     public void init(HardwareMap ahwMap){
 
-        FrontLeftDrive = ahwMap.get(DcMotor.class, "motor0");
-        FrontRightDrive = ahwMap.get(DcMotor.class, "motor1");
-        RearLeftDrive = ahwMap.get(DcMotor.class, "motor2");
-        RearRightDrive = ahwMap.get(DcMotor.class, "motor3");
+        FrontLeftDrive = ahwMap.get(DcMotor.class, frontLeftMotorName);
+        FrontRightDrive = ahwMap.get(DcMotor.class, frontRightMotorName);
+        RearLeftDrive = ahwMap.get(DcMotor.class, rearLeftMotorName);
+        RearRightDrive = ahwMap.get(DcMotor.class, rearRightMotorName);
 
         FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if
         // using AndyMark motors
@@ -126,6 +138,7 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         FrontRightDrive.setPower(Math.abs(speed));
         RearRightDrive.setPower(Math.abs(speed));
 
+        //Wait for motors to move to position
         while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
 
         //Set motor speed to zero
@@ -182,6 +195,9 @@ public class FourWheelDriveTrain extends ModularDriveTrain{
         RearLeftDrive.setPower(Math.abs(leftSpeed));
         FrontRightDrive.setPower(Math.abs(rightSpeed));
         RearRightDrive.setPower(Math.abs(rightSpeed));
+
+        //Wait for motors to move to position
+        while((FrontLeftDrive.isBusy() && RearLeftDrive.isBusy() && (FrontRightDrive.isBusy() && RearRightDrive.isBusy()))){}
 
         //Stop All motors
 
