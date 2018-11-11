@@ -52,10 +52,10 @@ import com.qualcomm.robotcore.hardware.Servo;
  * v 0.1    10/11/18 jmr primitive version, just enough to test the drive train.
  *          No class hierarchy, no initialization or run mode methods. Yet.
  *
- * v 0.2    (In development) Use of modular code for four wheel drivetrain.
+ * v 0.2    10/28/18 Use of modular code for four wheel drivetrain.
  *
  * v 0.3    (In development) REVTrix has one port controlling each side of the DT now. Therefore, it
- *           now uses a TwoWheelDriveTrain although each of the four wheels are powered.
+ *           now uses a TwoWheelDriveTrain although each of the four wheels are powered. Lifter code
  *
  */
 
@@ -77,42 +77,48 @@ public class REVTrixbot extends GenericFTCRobot
             WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "motor0", "motor1",
             "motor2", "motor3");
 
-    GoldMineralDetector goldLocator = new GoldMineralDetector();
+    //GoldMineralDetector goldLocator = new GoldMineralDetector(); TODO, update its code
 
+    /* Lifter not ready
     Lifter mineralArm = new Lifter(0, 180, 0, 180,
-            0, 100 );
+            0, 100, "Servo1", "motor3", "motor4");
+   */
 
     private class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
         private final int GRIPPER_CLOSED_DEGREES;
         private final int GRIPPER_OPEN_DEGREES;
+        private final String GRIPPER_SERVO_NAME;
 
         private DcMotor armLiftermotor = null;
         private final int LIFTER_STOWED_ROTATIONS;
         private final int LIFTER_ERECT_ROTATIONS;
+        private final String LIFTER_MOTOR_NAME;
 
         private DcMotor linearActuatorMotor = null;
         private final int LA_RETRACRED_ROTATIONS;
         private final int LA_EXTENDED_ROTATIONS;
+        private final String LA_MOTOR_NAME;
 
         Lifter(final int GRIPPER_CLOSED_DEGREES, final int GRIPPER_OPEN_DEGREES, final int LIFTER_STOWED_ROTATIONS,
-               final int LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS){
+               final int LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS,
+               final String GRIPPER_SERVO_NAME, final String LIFTER_MOTOR_NAME, final String LA_MOTOR_NAME){ //TODO Maybe Multithread Lifter and LA so they run simultaneosly
             this.GRIPPER_CLOSED_DEGREES = GRIPPER_CLOSED_DEGREES;
             this.GRIPPER_OPEN_DEGREES = GRIPPER_OPEN_DEGREES;
+            this.GRIPPER_SERVO_NAME = GRIPPER_SERVO_NAME;
             this.LIFTER_STOWED_ROTATIONS = LIFTER_STOWED_ROTATIONS;
             this.LIFTER_ERECT_ROTATIONS = LIFTER_ERECT_ROTATIONS;
+            this.LIFTER_MOTOR_NAME = LIFTER_MOTOR_NAME;
             this.LA_RETRACRED_ROTATIONS = LA_RETRACTED_ROTATIONS;
             this.LA_EXTENDED_ROTATIONS = LA_EXTENDED_ROTATIONS;
-
-
-
-
+            this.LA_MOTOR_NAME = LA_MOTOR_NAME;
         }
 
+
         public void init(HardwareMap ahwMap){
-            gripper = ahwMap.get(Servo.class, "servo0");
-            armLiftermotor = ahwMap.get(DcMotor.class, "motor3");
-            linearActuatorMotor = ahwMap.get(DcMotor.class, "motor4");
+            gripper = ahwMap.get(Servo.class, GRIPPER_SERVO_NAME);
+            armLiftermotor = ahwMap.get(DcMotor.class, LIFTER_MOTOR_NAME);
+            linearActuatorMotor = ahwMap.get(DcMotor.class, LA_MOTOR_NAME);
 
             armLiftermotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if
             linearActuatorMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
@@ -120,7 +126,7 @@ public class REVTrixbot extends GenericFTCRobot
             // Set all motors to zero power
             armLiftermotor.setPower(0);
             linearActuatorMotor.setPower(0);
-            gripper.setPosition(GRIPPER_CLOSED_DEGREES); //move servo to closed position
+            closeGripper();
 
             // Set both motors to run with encoders.
             armLiftermotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -128,6 +134,68 @@ public class REVTrixbot extends GenericFTCRobot
             armLiftermotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             linearActuatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+
+        public void teleOpExtendLinearActuator(boolean extendButton, boolean retractButton){
+            if((linearActuatorMotor.getCurrentPosition() <= LA_EXTENDED_ROTATIONS) && extendButton){
+                linearActuatorMotor.setPower(1);
+            }
+
+            if ((linearActuatorMotor.getCurrentPosition() >= LA_RETRACRED_ROTATIONS) && retractButton){
+                linearActuatorMotor.setPower(-1);
+            }
+        }
+
+        public void teleOpLiftLinearActuator(boolean liftButton, boolean lowerButton){
+            if((armLiftermotor.getCurrentPosition() <= LIFTER_ERECT_ROTATIONS) && liftButton){
+                armLiftermotor.setPower(1);
+            }
+
+            if ((linearActuatorMotor.getCurrentPosition() >= LIFTER_STOWED_ROTATIONS) && lowerButton){
+                linearActuatorMotor.setPower(-1);
+            }
+        }
+
+        public void teleOpGrip(boolean gripButton, boolean openButton){ //preferably a trigger
+            if(gripButton)
+                closeGripper();
+            if(openButton)
+                openGripper();
+        }
+
+        public void extendLinearActuator(int rotations){
+            if (linearActuatorMotor.getCurrentPosition() >= LA_EXTENDED_ROTATIONS && (rotations > 0)) //abort if already erect
+                return;
+            if ((linearActuatorMotor.getCurrentPosition() <= LA_RETRACRED_ROTATIONS) && (rotations < 0)) //another reasons to abort
+                return;
+            linearActuatorMotor.setTargetPosition(rotations);
+            linearActuatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            linearActuatorMotor.setPower(1);
+            while(linearActuatorMotor.isBusy()){}//wait
+            linearActuatorMotor.setPower(0);
+            linearActuatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        public void liftLinearActuator(int rotations){
+            if (armLiftermotor.getCurrentPosition() >= LIFTER_ERECT_ROTATIONS && (rotations > 0)) //abort if already erect
+                return;
+            if ((armLiftermotor.getCurrentPosition() <= LIFTER_STOWED_ROTATIONS) && (rotations < 0)) //another reasons to abort
+                return;
+            armLiftermotor.setTargetPosition(rotations);
+            armLiftermotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armLiftermotor.setPower(1);
+            while(armLiftermotor.isBusy()){}//wait
+            armLiftermotor.setPower(0);
+            armLiftermotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        public void openGripper(){
+            gripper.setPosition(GRIPPER_OPEN_DEGREES);
+        }
+
+        public void closeGripper(){
+            gripper.setPosition(GRIPPER_CLOSED_DEGREES);
+        }
+
     }
 
 
