@@ -163,13 +163,18 @@ public class Round_1_FourWheels_Crater extends LinearOpMode {
 
     private void targetLeft()  {
         // build a profile to handle target on left
-        robot.dt.encoderDrive(1, -10, 10);
+        robot.dt.encoderDrive(1, -5, 5);
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -30, -30);
+        robot.dt.encoderDrive(-1, -40, -40);
         sleep(1500);
+        robot.dt.encoderDrive(-1, 10, 10);
+        sleep(1500);
+        robot.dt.encoderDrive(-1, 5.0, -5.0);
+        sleep(2000);
+        robot.dt.encoderDrive(-1, -20, -20);
+        sleep(1000);
 
-        done = true;  // end the run
-
+         done = true;  // end the run
     }
 
     private void targetRight() {
@@ -177,15 +182,15 @@ public class Round_1_FourWheels_Crater extends LinearOpMode {
         // build a profile to handle target on right
         robot.dt.encoderDrive(1, 8, -8);
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -13, -13);
+        robot.dt.encoderDrive(-1, -40, -40);
         sleep(1500);
-        /*
-        robot.dt.encoderDrive(-1, -15.0, 15.0);
+        robot.dt.encoderDrive(-1, 10, 10);
+        sleep(1500);
+        robot.dt.encoderDrive(-1, -13.0, 13.0);
         sleep(2000);
         robot.dt.encoderDrive(-1, -20, -20);
         sleep(1000);
-        robot.dt.encoderDrive(1, 70, 70);
-        */
+
         done = true;  // end the run
     }
 
@@ -194,15 +199,19 @@ public class Round_1_FourWheels_Crater extends LinearOpMode {
         // build a profile to handle target on right
         robot.dt.encoderDrive(-1, -19, -19);
         sleep(1500);
-        robot.dt.encoderDrive(1, 6, -6);
+        robot.dt.encoderDrive(1, 15, -15);
         sleep(1000);
-        robot.dt.encoderDrive(-1, -5, -5);
+        robot.dt.encoderDrive(-1, -7, -7);
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, 5,5);
+        robot.dt.encoderDrive(-1, 3,3);
         sleep(1000);
-        robot.dt.encoderDrive(1,-6,6);
+        robot.dt.encoderDrive(-1, -5,5);
         sleep(1000);
-        robot.dt.encoderDrive(1,3,3);
+        robot.dt.encoderDrive(-1, 6,6);
+        sleep(1000);
+        robot.dt.encoderDrive(1,-10.5,10.5);
+        sleep(1000);
+        robot.dt.encoderDrive(1,-22,-22);
 
         /*
         robot.dt.encoderDrive(1, 4, -4);
