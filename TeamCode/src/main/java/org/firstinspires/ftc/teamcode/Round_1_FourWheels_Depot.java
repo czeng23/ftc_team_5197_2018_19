@@ -98,6 +98,7 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
         // Init robot
 
         robot.dt.init(hardwareMap);
+        robot.idenfierFor5197Depositer.init(hardwareMap);
 
         // turn on camera
         locator.enable();
@@ -165,17 +166,19 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
 
     private void targetLeft()  {
         // build a profile to handle target on left
-        robot.dt.encoderDrive(1, -10, 10);
+        robot.dt.encoderDrive(1, -10, 10); //turn to gold mineral
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -45, -45);
+        robot.dt.encoderDrive(-1, -45, -45); //move to gold mineral
         sleep(1500);
-        robot.dt.encoderDrive(-1, 18.75, -18.75);
+        robot.dt.encoderDrive(-1, 18.75, -18.75); //turn to depot
         sleep(1000);
-        robot.dt.encoderDrive(-1, -34, -34);
+        robot.dt.encoderDrive(-1, -34, -34); //go to depot
         sleep(1000);
-        robot.dt.encoderDrive(1, -20.75, 20.75);
+        robot.idenfierFor5197Depositer.depositTeamIdentifier(); //deposit team identifer.
         sleep(1000);
-        robot.dt.encoderDrive(1, 76, 76);
+        robot.dt.encoderDrive(1, -20.75, 20.75); //turn to crater
+        sleep(1000);
+        robot.dt.encoderDrive(1, 76, 76); //drive to crater
 
         done = true;  // end the run
 
@@ -184,28 +187,32 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
     private void targetRight() {
 
         // build a profile to handle target on right
-        robot.dt.encoderDrive(1, 4, -4);
+        robot.dt.encoderDrive(1, 4, -4); //turn to gold
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -39, -39);
+        robot.dt.encoderDrive(-1, -39, -39); //drive to gold
         sleep(1500);
-        robot.dt.encoderDrive(-1, -16.0, 16.0);
+        robot.dt.encoderDrive(-1, -16.0, 16.0); //turn to depot
         sleep(2000);
-        robot.dt.encoderDrive(-1, -20, -20);
+        robot.dt.encoderDrive(-1, -20, -20); //drive to depot.
         sleep(1000);
-        robot.dt.encoderDrive(1, 70, 70);
+        robot.idenfierFor5197Depositer.depositTeamIdentifier();
+        sleep(1000);
+        robot.dt.encoderDrive(1, 70, 70); //drive to crater
         done = true;  // end the run
     }
 
     private void targetCenter() {
 
         // build a profile to handle target on right
-        robot.dt.encoderDrive(1, -4, 4);
+        robot.dt.encoderDrive(1, -4, 4); //turn to gold
         sleep(1000);// wait for the previous motion to complete
-        robot.dt.encoderDrive(-1, -22, -22);
+        robot.dt.encoderDrive(-1, -22, -22); //move to gold
         sleep(1500);
-        robot.dt.encoderDrive(1, 4, -4);
+        robot.dt.encoderDrive(1, 4, -4); //turn to depot
         sleep(1000);
-        robot.dt.encoderDrive(1, -35, -35);
+        robot.dt.encoderDrive(1, -35, -35); //move to depot
+        sleep(1000);
+        robot.idenfierFor5197Depositer.depositTeamIdentifier();
         sleep(1000);
         robot.dt.encoderDrive(1, 1.5, 1.5);
         sleep(1000);
