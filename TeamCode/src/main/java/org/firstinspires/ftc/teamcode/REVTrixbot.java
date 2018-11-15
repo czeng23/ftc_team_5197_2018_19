@@ -57,6 +57,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * v 0.3    (In development) REVTrix has one port controlling each side of the DT now. Therefore, it
  *           now uses a TwoWheelDriveTrain although each of the four wheels are powered. Lifter code
  *
+ * v 0.3.5    Deposit team identifier(indevelopment)
  */
 
 public class REVTrixbot extends GenericFTCRobot
@@ -73,11 +74,16 @@ public class REVTrixbot extends GenericFTCRobot
     private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18
 
 
+
+
     FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
             WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "motor0", "motor1",
             "motor2", "motor3");
 
-    //GoldMineralDetector goldLocator = new GoldMineralDetector(); TODO, update its code
+
+    GoldMineralDetector goldLocator = new GoldMineralDetector();
+
+    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0,0);
 
     /* Lifter not ready
     Lifter mineralArm = new Lifter(0, 180, 0, 180,
@@ -196,6 +202,26 @@ public class REVTrixbot extends GenericFTCRobot
             gripper.setPosition(GRIPPER_CLOSED_DEGREES);
         }
 
+    }
+
+    public class TeamIdenfifierDepositer implements FTCModularizableSystems{
+        private Servo glypgDepositServo = null;
+        private final double INIT_POS;
+        private final double DEPOSIT_POS;
+
+        TeamIdenfifierDepositer(final double INIT_POS, final double DEPOSIT_POS){
+            this.INIT_POS = INIT_POS;
+            this.DEPOSIT_POS = DEPOSIT_POS;
+        }
+
+        public void init(HardwareMap ahwMap) {
+            glypgDepositServo = ahwMap.get(Servo.class, "servo5");
+            glypgDepositServo.setPosition(INIT_POS);
+        }
+
+        public void depositTeamIdentifier(){
+            glypgDepositServo.setPosition(DEPOSIT_POS);
+        }
     }
 
 
