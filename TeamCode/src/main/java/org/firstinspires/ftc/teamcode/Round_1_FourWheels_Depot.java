@@ -179,7 +179,7 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
         robot.dt.encoderDrive(1, -23, 23); //turn to crater
         sleep(1000);
         robot.dt.encoderDrive(1, 76, 76); //drive to crater
-
+        sleep(1000);
         done = true;  // end the run
 
     }
@@ -200,6 +200,7 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
         robot.dt.encoderDrive(1,-2.33,2.33); //veer a little left to be safe.
         sleep(1000);
         robot.dt.encoderDrive(1, 70, 70); //drive to crater
+        sleep(1000);
         done = true;  // end the run
     }
 
@@ -221,7 +222,7 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
         robot.dt.encoderDrive(1, -11.83, 11.83);
         sleep(1000);
         robot.dt.encoderDrive(1, 72, 72);
-
+        sleep(1000);
         done = true;  // end the run
     }
 
