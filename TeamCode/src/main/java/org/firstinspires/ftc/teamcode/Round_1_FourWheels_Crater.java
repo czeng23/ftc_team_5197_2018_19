@@ -212,7 +212,7 @@ public class Round_1_FourWheels_Crater extends LinearOpMode {
         robot.dt.encoderDrive(1,-10.5,10.5);
         sleep(1000);
         robot.dt.encoderDrive(1,-22,-22);
-
+        sleep(1000);
         /*
         robot.dt.encoderDrive(1, 4, -4);
         sleep(1000);
