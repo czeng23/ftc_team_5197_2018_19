@@ -172,7 +172,7 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
         sleep(1500);
         robot.dt.encoderDrive(-1, 18.75, -18.75); //turn to depot
         sleep(1000);
-        robot.dt.encoderDrive(-1, -34, -34); //go to depot
+        robot.dt.encoderDrive(-1, -32, -32); //go to depot
         sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier(); //deposit team identifer.
         sleep(1000);
@@ -187,11 +187,11 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
     private void targetRight() {
 
         // build a profile to handle target on right
-        robot.dt.encoderDrive(1, 4, -4); //turn to gold
+        robot.dt.encoderDrive(1, 3.3, -3.3); //turn to gold
         sleep(1000);// wait for the previous motion to complete
         robot.dt.encoderDrive(-1, -39, -39); //drive to gold
         sleep(1500);
-        robot.dt.encoderDrive(-1, -16.0, 16.0); //turn to depot
+        robot.dt.encoderDrive(-1, -16.5, 16.5); //turn to depot
         sleep(2000);
         robot.dt.encoderDrive(-1, -20, -20); //drive to depot.
         sleep(1000);
