@@ -57,7 +57,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * v 0.3    (In development) REVTrix has one port controlling each side of the DT now. Therefore, it
  *           now uses a TwoWheelDriveTrain although each of the four wheels are powered. Lifter code
  *
- * v 0.3.5    Deposit team identifier(indevelopment)
+ * v 0.3.5    Deposit team identifier.
  */
 
 public class REVTrixbot extends GenericFTCRobot
@@ -83,7 +83,7 @@ public class REVTrixbot extends GenericFTCRobot
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
-    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0,0);
+    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9); //move to 180 at init. Then to close to 360
 
     /* Lifter not ready
     Lifter mineralArm = new Lifter(0, 180, 0, 180,
