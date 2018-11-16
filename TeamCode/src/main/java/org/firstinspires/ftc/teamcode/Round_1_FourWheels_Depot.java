@@ -176,7 +176,7 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
         sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier(); //deposit team identifer.
         sleep(1000);
-        robot.dt.encoderDrive(1, -20.75, 20.75); //turn to crater
+        robot.dt.encoderDrive(1, -23, 23); //turn to crater
         sleep(1000);
         robot.dt.encoderDrive(1, 76, 76); //drive to crater
 
@@ -191,11 +191,13 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
         sleep(1000);// wait for the previous motion to complete
         robot.dt.encoderDrive(-1, -39, -39); //drive to gold
         sleep(1500);
-        robot.dt.encoderDrive(-1, -16.5, 16.5); //turn to depot
+        robot.dt.encoderDrive(-1, -12.5, 12.5); //turn to depot
         sleep(2000);
         robot.dt.encoderDrive(-1, -20, -20); //drive to depot.
         sleep(1000);
         robot.idenfierFor5197Depositer.depositTeamIdentifier();
+        sleep(1000);
+        robot.dt.encoderDrive(1,-2.33,2.33); //veer a little left to be safe.
         sleep(1000);
         robot.dt.encoderDrive(1, 70, 70); //drive to crater
         done = true;  // end the run
@@ -216,7 +218,7 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
         sleep(1000);
         robot.dt.encoderDrive(1, 1.5, 1.5);
         sleep(1000);
-        robot.dt.encoderDrive(1, -11, 11);
+        robot.dt.encoderDrive(1, -11.83, 11.83);
         sleep(1000);
         robot.dt.encoderDrive(1, 72, 72);
 
