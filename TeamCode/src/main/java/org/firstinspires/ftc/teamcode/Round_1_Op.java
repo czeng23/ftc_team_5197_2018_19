@@ -42,6 +42,8 @@ import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.opencv.core.Size;
+
 import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.LEFT;
 import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.MID;
 import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.RIGHT;
@@ -57,7 +59,7 @@ public class Round_1_Op extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
-    private GoldMineralDetector locator = null;
+    private GoldMineralDetector_2 locator = null;
     private boolean visible = false;
     private double x = 0.0;
     final static int MIDPOINT = 0;  // screen midpoint
@@ -76,7 +78,7 @@ public class Round_1_Op extends LinearOpMode {
 
 
         // Init Detector
-        locator = new GoldMineralDetector();
+        locator = new GoldMineralDetector_2();
         locator.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         locator.useDefaults();
 
@@ -105,7 +107,12 @@ public class Round_1_Op extends LinearOpMode {
         while (opModeIsActive()) {
         //while (!done) {
             visible = locator.isFound();
-            x = locator.getXPosition() -MIDPOINT;
+            x = locator.getXPosition() - MIDPOINT;
+            if (locator.getArea() < 1750 )
+                visible = false;
+
+            if (locator.getRatio() > 2.5)
+                visible = false;
 
             if(visible) {
                 if (x < 0)
@@ -144,9 +151,13 @@ public class Round_1_Op extends LinearOpMode {
 
 
             }
-            telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
-            telemetry.addData("X Pos" , x); // Gold X pos.
+            //telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
+            //telemetry.addData("X Pos" , x); // Gold X pos.
             telemetry.addData("Pos" , text); // Gold X pos.
+
+            telemetry.addData("Ratio" , locator.getRatio()); // Gold X pos.
+            telemetry.addData("Area" , locator.getArea()); // Gold X pos.
+
 
             telemetry.update();// Gold X pos.
         }
