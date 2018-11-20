@@ -87,12 +87,15 @@ public class Round_1_Op extends LinearOpMode {
         locator.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
         locator.downscale = 0.4; // How much to downscale the input frames
 
-        locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
+        //locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
+        locator.areaScoringMethod = DogeCV.AreaScoringMethod.PERFECT_AREA; // Can also be PERFECT_AREA
+        locator.perfectAreaScorer.perfectArea = 2000;  // To be calibrated
         //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
-        locator.maxAreaScorer.weight = 0.005;
+        //locator.maxAreaScorer.weight = 0.005;
+        locator.perfectAreaScorer.weight = 0.01;
 
-        locator.ratioScorer.weight = 5;
-        locator.ratioScorer.perfectRatio = 1.0;
+        locator.ratioScorer.weight = 50;
+        locator.ratioScorer.perfectRatio = 1.25;  // To be calibrated
         locator.enable();
 
         telemetry.addData("locator", "Initialized");
@@ -112,6 +115,9 @@ public class Round_1_Op extends LinearOpMode {
                 visible = false;
 
             if (locator.getRatio() > 2.5)
+                visible = false;
+
+            if (locator.getScore() >10)
                 visible = false;
 
             if(visible) {
@@ -152,11 +158,12 @@ public class Round_1_Op extends LinearOpMode {
 
             }
             //telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
-            //telemetry.addData("X Pos" , x); // Gold X pos.
+            telemetry.addData("X Pos" , x); // Gold X pos.
             telemetry.addData("Pos" , text); // Gold X pos.
 
             telemetry.addData("Ratio" , locator.getRatio()); // Gold X pos.
             telemetry.addData("Area" , locator.getArea()); // Gold X pos.
+            telemetry.addData("Score" , locator.getScore()); // Gold X score.
 
 
             telemetry.update();// Gold X pos.

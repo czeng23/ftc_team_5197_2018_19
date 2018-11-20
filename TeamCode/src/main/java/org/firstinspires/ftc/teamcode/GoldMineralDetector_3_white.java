@@ -34,7 +34,7 @@ import java.util.List;
  * v 0.2   11/02/18 added this Javadoc
  */
 
-public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModularizableSystems{
+public class GoldMineralDetector_3_white extends DogeCVDetector implements FTCModularizableSystems{
 
     //Position enum
 
@@ -61,29 +61,29 @@ public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModulari
     private double  goldArea = 0;     // Area
     private double  goldRatio = 0;         // width / high ratio
 
-    private double  goldScore = 0;         // width / high ratio
 
     // Detector settings
     public boolean debugAlignment = true; // Show debug lines to show alignment settings
     public double alignPosOffset  = 0;    // How far from center frame is aligned
     public double alignSize       = 640;  // Used to be 100. How wide is the margin of error for alignment
 
-    public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
+    //public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
+    public DogeCV.AreaScoringMethod areaScoringMethod = DogeCV.AreaScoringMethod.PERFECT_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
     // Can also be PERFECT_AREA
     //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
 
 
     //Create the default filters and scorers
-    public DogeCVColorFilter yellowFilter      = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW); //Default Yellow filter
+    public DogeCVColorFilter yellowFilter      = new LeviColorFilter(LeviColorFilter.ColorPreset.WHITE); //Default Yellow filter
 
-    public RatioScorer       ratioScorer       = new RatioScorer(1.25, 50000);          // Used to find perfect squares
-    public MaxAreaScorer     maxAreaScorer     = new MaxAreaScorer( 0.001);                    // Used to find largest objects
+    public RatioScorer       ratioScorer       = new RatioScorer(0.8, 50);          // Used to find perfect squares
+    public MaxAreaScorer     maxAreaScorer     = new MaxAreaScorer( 0.005);                    // Used to find largest objects
     public PerfectAreaScorer perfectAreaScorer = new PerfectAreaScorer(5000,0.05); // Used to find objects near a tuned area value
 
     /**
      * Simple constructor
      */
-    public GoldMineralDetector_2() {
+    public GoldMineralDetector_3_white() {
         super();
         detectorName = "Gold Align Detector"; // Set the detector name
         downscale = 0.4; //edit downscale of DogeCVDetector
@@ -132,7 +132,6 @@ public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModulari
             if(score < bestDiffrence){
                 bestDiffrence = score;
                 bestRect = rect;
-                goldScore = score;
             }
         }
 
@@ -156,7 +155,6 @@ public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModulari
             goldArea = bestRect.area();
 
             // Set width / high ratio
-
             goldRatio = (double)bestRect.width / (double)bestRect.height;
 
             // Draw center point
@@ -242,10 +240,6 @@ public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModulari
 
     public double getRatio(){
         return goldRatio;
-    }
-
-    public double getScore(){
-        return Math.abs(goldScore);
     }
     /**
      * Returns if a gold mineral is being tracked/detected
