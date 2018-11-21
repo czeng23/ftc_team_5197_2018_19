@@ -58,6 +58,7 @@ public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModulari
     private boolean found    = false; // Is the gold mineral found
     private boolean aligned  = false; // Is the gold mineral aligned
     private double  goldXPos = 0;     // X Position (in pixels) of the gold element
+    private double  goldYPos = 0;     // Y Position (in pixels) of the gold element
     private double  goldArea = 0;     // Area
     private double  goldRatio = 0;         // width / high ratio
 
@@ -152,6 +153,10 @@ public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModulari
             xPos = bestRect.x + (bestRect.width / 2);
             goldXPos = xPos;
 
+            // Set align Y pos
+            yPos = bestRect.y + (bestRect.height / 2);
+            goldYPos = yPos;
+
             // Set Area
             goldArea = bestRect.area();
 
@@ -234,6 +239,10 @@ public class GoldMineralDetector_2 extends DogeCVDetector implements FTCModulari
      */
     public double getXPosition(){
         return goldXPos-MIDPOINT;
+    } //account for midpoint
+
+    public double getYPosition(){
+        return goldYPos;
     } //account for midpoint
 
     public double getArea(){

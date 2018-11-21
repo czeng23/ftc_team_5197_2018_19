@@ -29,43 +29,41 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
-import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.opencv.core.Size;
-
-import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.LEFT;
-import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.MID;
-import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.RIGHT;
-import static org.firstinspires.ftc.teamcode.Round_1_Op.Pos.UNKNOWN;
-
-
-@TeleOp(name="Round 1 Operation", group="Linear Opmode")
+@Autonomous(name="Meet 1 FourWheels Facing Crater", group="REVTrixbot")
 //@Disabled
-public class Round_1_Op extends LinearOpMode {
+public class Meet_1_FourWheels_Crater extends LinearOpMode {
 
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
     private GoldMineralDetector_2 locator = null;
+    //private Lookeebot_4Wheels robot = null;
+    private REVTrixbot robot = new REVTrixbot();
+
     private boolean visible = false;
+    private boolean done = false;
     private double x = 0.0;
     private double y = 0.0;
-    final static int MIDPOINT = 0;  // screen midpoint
-    final static int LEFTPOINT = -106;
-    final static int RIGHTPOINT = 106;
+
+    private final static int MIDPOINT = 0;  // screen midpoint
+    private final static int LEFTPOINT = -106;
+    private final static int RIGHTPOINT = 106;
+
+
+    static final double     COUNTS_PER_MOTOR_REV    = 4 ;
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;
+
+    // REVTrix specific drive train members.
+    static final double     WHEEL_DIAMETER_INCHES   = 3.5 ; //estimate
+    static final double     DRIVE_WHEEL_SEPARATION  = 28.0 ; //estimate
+    static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER;
 
     public enum Pos {
         LEFT, MID, RIGHT, UNKNOWN
@@ -76,7 +74,6 @@ public class Round_1_Op extends LinearOpMode {
 
         Pos pos = Pos.MID;
         String text = "??";
-
 
         // Init Detector
         locator = new GoldMineralDetector_2();
@@ -102,14 +99,24 @@ public class Round_1_Op extends LinearOpMode {
         telemetry.addData("locator", "Initialized");
         telemetry.update();
 
+        // Init robot
+
+        robot.dt.init(hardwareMap);
+
+        // turn on camera
+        locator.enable();
+
+        done = false;
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-        //while (!done) {
+        while (opModeIsActive() && !done) {
+        // lineup the camera on the right side
+        // right 2 balls are visible
+            sleep(1000);
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
             y = locator.getYPosition();
@@ -128,11 +135,11 @@ public class Round_1_Op extends LinearOpMode {
 
             if(visible) {
                 if (x < 0)
-                    pos = MID;
+                    pos = Pos.LEFT;
                 else if (x >= 0)
-                    pos = RIGHT;
+                    pos = Pos.MID;
             }   else {
-                pos = LEFT;
+                pos = Pos.RIGHT;
             }
 
             switch (pos) {
@@ -161,17 +168,11 @@ public class Round_1_Op extends LinearOpMode {
                     targetUnknown();
                     break;
 
-
             }
-            //telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
+            telemetry.addData("IsFound" ,visible); // Is the bot aligned with the gold mineral
             telemetry.addData("X Pos" , x); // Gold X pos.
             telemetry.addData("Y Pos" , y); // Gold Y pos.
             telemetry.addData("Pos" , text); // Gold X pos.
-
-            telemetry.addData("Ratio" , locator.getRatio()); // Gold X pos.
-            telemetry.addData("Area" , locator.getArea()); // Gold X pos.
-            telemetry.addData("Score" , locator.getScore()); // Gold X score.
-
 
             telemetry.update();// Gold X pos.
         }
@@ -181,18 +182,60 @@ public class Round_1_Op extends LinearOpMode {
     }
 
     private void targetLeft()  {
+        // build a profile to handle target on left
+        robot.dt.encoderDrive(1, -5, 5);
+        sleep(1000);// wait for the previous motion to complete
+        robot.dt.encoderDrive(-1, -40, -40);
+        sleep(1500);
 
+        /*
+        robot.dt.encoderDrive(-1, 10, 10);
+        sleep(1500);
+        robot.dt.encoderDrive(-1, 5.0, -5.0);
+        sleep(2000);
+        robot.dt.encoderDrive(-1, -20, -20);
+        sleep(1000);
+        */
+
+         done = true;  // end the run
     }
 
     private void targetRight() {
 
+        // build a profile to handle target on right
+        robot.dt.encoderDrive(1, 8, -8);
+        sleep(1000);// wait for the previous motion to complete
+        robot.dt.encoderDrive(-1, -40, -40);
+        sleep(1500);
+
+        /*
+        robot.dt.encoderDrive(-1, 10, 10);
+        sleep(1500);
+        robot.dt.encoderDrive(-1, -13.0, 13.0);
+        sleep(2000);
+        robot.dt.encoderDrive(-1, -20, -20);
+        sleep(1000);
+        */
+
+        done = true;  // end the run
     }
 
     private void targetCenter() {
 
+        // build a profile to handle target on right
+        robot.dt.encoderDrive(1, 3, -3);
+        sleep(1000);
+        robot.dt.encoderDrive(1,-28, -28);
+        sleep(1000);
+
+        //robot.dt.encoderDrive(1, -17, 17);
+
+        done = true;  // end the run
     }
 
     private void targetUnknown() {
-
+        // Should not get here
+        done = true;  // end the run
     }
+
 }
