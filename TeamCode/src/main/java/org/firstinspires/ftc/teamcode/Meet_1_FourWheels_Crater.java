@@ -87,7 +87,7 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
 
         //locator.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
         locator.areaScoringMethod = DogeCV.AreaScoringMethod.PERFECT_AREA; // Can also be PERFECT_AREA
-        locator.perfectAreaScorer.perfectArea = 3000;  // To be calibrated
+        locator.perfectAreaScorer.perfectArea = 2400;  // To be calibrated
         //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
         //locator.maxAreaScorer.weight = 0.005;
         locator.perfectAreaScorer.weight = 0.01;
@@ -102,6 +102,7 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         // Init robot
 
         robot.dt.init(hardwareMap);
+        robot.revTrixbotLifter.init(hardwareMap);
 
         // turn on camera
         locator.enable();
@@ -111,6 +112,8 @@ public class Meet_1_FourWheels_Crater extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
+
+        robot.revTrixbotLifter.fullyExtend(1);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !done) {

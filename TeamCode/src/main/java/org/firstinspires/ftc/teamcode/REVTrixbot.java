@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -77,20 +78,22 @@ public class REVTrixbot extends GenericFTCRobot
 
 
     FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
-            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "motor0", "motor1",
-            "motor2", "motor3");
+            WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "EH1motor0", "EH1motor1",
+            "EH1motor2", "EX1motor3");
 
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
-    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9); //move to 180 at init. Then to close to 360
+    TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9); //move to 180 at init. Then to close to
+
+    RobotLift revTrixbotLifter = new RobotLift("EH2motor0", 0, 3);
 
     /* Lifter not ready
     Lifter mineralArm = new Lifter(0, 180, 0, 180,
             0, 100, "Servo1", "motor3", "motor4");
    */
 
-    private class Lifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
+    private class MineralLifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
         private final int GRIPPER_CLOSED_DEGREES;
         private final int GRIPPER_OPEN_DEGREES;
@@ -106,7 +109,7 @@ public class REVTrixbot extends GenericFTCRobot
         private final int LA_EXTENDED_ROTATIONS;
         private final String LA_MOTOR_NAME;
 
-        Lifter(final int GRIPPER_CLOSED_DEGREES, final int GRIPPER_OPEN_DEGREES, final int LIFTER_STOWED_ROTATIONS,
+        MineralLifter(final int GRIPPER_CLOSED_DEGREES, final int GRIPPER_OPEN_DEGREES, final int LIFTER_STOWED_ROTATIONS,
                final int LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS,
                final String GRIPPER_SERVO_NAME, final String LIFTER_MOTOR_NAME, final String LA_MOTOR_NAME){ //TODO Maybe Multithread Lifter and LA so they run simultaneosly
             this.GRIPPER_CLOSED_DEGREES = GRIPPER_CLOSED_DEGREES;
@@ -203,6 +206,56 @@ public class REVTrixbot extends GenericFTCRobot
         }
 
     }
+
+    public class RobotLift implements FTCModularizableSystems{
+        //0 rotations is lifter fully retracted.
+        private DcMotor liftMotor;
+        private final String LIFT_MOTOR_NAME;
+        private final int LIFTER_RETRACRED_ROTATIONS;
+        private final int LIFTER_EXTENDED_ROTATIONS;
+
+        RobotLift(final String LIFT_MOTOR_NAME, final int LIFTER_RETRACRED_ROTATIONS,
+                  final int LIFTER_EXTENDED_ROTATIONS){
+            this.LIFT_MOTOR_NAME = LIFT_MOTOR_NAME;
+            this.LIFTER_RETRACRED_ROTATIONS = LIFTER_RETRACRED_ROTATIONS;
+            this.LIFTER_EXTENDED_ROTATIONS = LIFTER_EXTENDED_ROTATIONS;
+        }
+
+        public void init(HardwareMap ahwMap) {
+            liftMotor = ahwMap.get(DcMotor.class, LIFT_MOTOR_NAME);
+            liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            liftMotor.setPower(0);
+
+            liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            fullyRetract(1);
+        }
+
+        public void lift(double speed, int rotations){
+            if (liftMotor.getCurrentPosition() >= LIFTER_EXTENDED_ROTATIONS && (rotations > 0)) //abort if already erect
+                return;
+            if ((liftMotor.getCurrentPosition() <= LIFTER_RETRACRED_ROTATIONS) && (rotations < 0)) //another reasons to abort
+                return;
+            int rotationTarget = liftMotor.getCurrentPosition() + rotations;
+
+            liftMotor.setTargetPosition(rotationTarget);
+            liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            liftMotor.setPower(Math.abs(speed)); //direction set.
+            while (liftMotor.isBusy());//wait for liftmotor to move
+            liftMotor.setPower(0);
+            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        public void fullyExtend(double speed){
+            lift(Math.abs(speed), LIFTER_EXTENDED_ROTATIONS);
+        }
+
+        public void fullyRetract(double speed){
+            lift(Math.abs(speed), LIFTER_RETRACRED_ROTATIONS);
+        }
+    }
+
+
 
     public class TeamIdenfifierDepositer implements FTCModularizableSystems{
         private Servo glypgDepositServo = null;

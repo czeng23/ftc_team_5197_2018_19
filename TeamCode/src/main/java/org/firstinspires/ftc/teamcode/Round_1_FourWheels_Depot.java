@@ -113,6 +113,7 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
         while (opModeIsActive() && !done) {
         // lineup the camera on the right side
         // right 2 balls are visible
+            //land();
             sleep(1000);
             visible = locator.isFound();
             x = locator.getXPosition() - MIDPOINT;
@@ -163,6 +164,17 @@ public class Round_1_FourWheels_Depot extends LinearOpMode {
         telemetry.addData("Status" ,"All Done"); // Is the bot aligned with the gold mineral
         telemetry.update();// Gold X pos.
     }
+
+    private void land(){
+
+
+        while(true){
+        //While limit switch not pressed, lower robot
+         }
+
+    }
+
+
 
     private void targetLeft()  {
         // build a profile to handle target on left
