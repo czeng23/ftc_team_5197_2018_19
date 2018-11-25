@@ -60,6 +60,9 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
         if(HAS_ENCODER && (MINIMUM_ROTATIONS == null || MAXIMUM_ROTAIONS == null))
             throw new IllegalArgumentException("Encoded actuators must specify min and max rotations regardless of min or max limit switch as fail safe");
 
+        if(!HAS_ENCODER && (MAXIMUM_ROTAIONS != null || MINIMUM_ROTATIONS != null))
+            throw new IllegalArgumentException("Cannot use max and min rotations without an encoder");
+
         this.MOTOR_NAME = MOTOR_NAME;
         this.MINIMUM_ROTATIONS = MINIMUM_ROTATIONS;
         this.MAXIMUM_ROTAIONS = MAXIMUM_ROTAIONS;
@@ -70,9 +73,6 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
 
         this.INIT_MOTOR_SPEED = INIT_MOTOR_SPEED;
     }
-
-
-
 
     public void init(HardwareMap ahwMap) {
         motor = ahwMap.get(DcMotor.class, MOTOR_NAME);
@@ -119,16 +119,40 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
 
     public void move(double speed, @Nullable Integer rotations) throws IllegalArgumentException {
         int rotationTarget;
-        if (!HAS_ENCODER && rotations == null) {
-            throw new IllegalArgumentException("Cannot use rotations without an encoder");
+        if (rotations == null &&( !HAS_MAXIMUM_LIMIT_SWITCH || !HAS_MINIMUM_LIMIT_SWITCH ) && !HAS_ENCODER) {
+            throw new IllegalArgumentException("Cannot limit motion without encoders at both limits if missing encoder.");
         }
 
-        if (HAS_ENCODER) {
+
+        if((HAS_MINIMUM_LIMIT_SWITCH || (rotations == MINIMUM_ROTATIONS && HAS_MINIMUM_LIMIT_SWITCH))){
+            speed = -Math.abs(speed);
+            while (!minimumLimitSwitch.getState() && speed <0) {
+                motor.setPower(speed);
+            }
+            if(HAS_ENCODER){
+                motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            motor.setPower(0); //then don't forget to stop motor.
+        }
+
+        if (HAS_MAXIMUM_LIMIT_SWITCH || (rotations == MAXIMUM_ROTAIONS && HAS_MAXIMUM_LIMIT_SWITCH)) {  //default to these commands if limit switch. For maximum, exit method after. For minimum, it is possible to reset encoder, so no need to exit.
+            speed = Math.abs(speed);
+            while (!maximumLimitSwitch.getState() && speed > 0) {
+                motor.setPower(speed);
+            }
+            motor.setPower(0);
+            return;
+        }
+
+        if (HAS_ENCODER && rotations != null) {
 
             if (HAS_MINIMUM_LIMIT_SWITCH && motor.getCurrentPosition() < (0.5*(MAXIMUM_ROTAIONS-MINIMUM_ROTATIONS))) {  //resonably should be closer to 0 position. This also compensates for magnetic limit switches using one magnetic limit switch and a magnet at both ends
                 if (minimumLimitSwitch.getState()) {
-                    motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //set to zero
-                    motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    if (MINIMUM_ROTATIONS == 0){
+                        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //set to zero. Unfortunately, I have found no other way to change the rotation value of encoders.
+                        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    }
                     return;
                 }
             }
@@ -149,20 +173,6 @@ public class LimitedMotorDrivenActuator implements FTCModularizableSystems{
             while (motor.isBusy()) ;//wait for motor to move
             motor.setPower(0);
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        } else {
-            if (HAS_MINIMUM_LIMIT_SWITCH) {
-                while (!minimumLimitSwitch.getState() && speed <0) {
-                    motor.setPower(speed);
-                }
-                motor.setPower(0); //then don't forget to stop motor.
-            }
-
-            if (HAS_MAXIMUM_LIMIT_SWITCH) {
-                while (!maximumLimitSwitch.getState() && speed > 0) {
-                    motor.setPower(speed);
-                }
-                motor.setPower(0);
-            }
         }
     }
 
