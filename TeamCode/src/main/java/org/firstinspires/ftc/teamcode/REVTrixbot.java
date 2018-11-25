@@ -74,94 +74,59 @@ public class REVTrixbot extends GenericFTCRobot
     private static final double     DRIVE_WHEEL_SEPARATION  = 15.0 ;
     private static final DcMotor.RunMode RUNMODE = DcMotor.RunMode.RUN_USING_ENCODER; //encoder cables installed 10/27/18
 
-
-
-
     FourWheelDriveTrain dt = new FourWheelDriveTrain(COUNTS_PER_MOTOR_REV, DRIVE_GEAR_REDUCTION,
             WHEEL_DIAMETER_INCHES, DRIVE_WHEEL_SEPARATION, RUNMODE, "EH1motor0", "EH1motor1",
-            "EH1motor2", "EX1motor3");
+            "EH1motor2", "EH1motor3");
 
 
     GoldMineralDetector goldLocator = new GoldMineralDetector();
 
     TeamIdenfifierDepositer idenfierFor5197Depositer = new TeamIdenfifierDepositer(0.5,0.9); //move to 180 at init. Then to close to
 
-    RobotLift revTrixbotLifter = new RobotLift("EH2motor0", 0, 3);
+    LimitedMotorDrivenActuator roverRuckusRevTrixBotLift = new LimitedMotorDrivenActuator("EH2motor0",
+            0, 3, DcMotorSimple.Direction.FORWARD, false,
+            false, true, null, null,
+            true, false, 1);
 
-    /* Lifter not ready
-    Lifter mineralArm = new Lifter(0, 180, 0, 180,
-            0, 100, "Servo1", "motor3", "motor4");
-   */
+    MineralLifter revTrixBotMineralArm = new MineralLifter(0, 0.9,
+            0, 3, 0,
+            10, "EH2servo0", "EH2motor1",
+            "EH2motor2"); //Not ready.
 
-    private class MineralLifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
+    public class MineralLifter implements FTCModularizableSystems{ //nested since it is technically not modularizable
         private Servo gripper = null;
-        private final int GRIPPER_CLOSED_DEGREES;
-        private final int GRIPPER_OPEN_DEGREES;
+        private final double GRIPPER_CLOSED;
+        private final double GRIPPER_OPEN;
         private final String GRIPPER_SERVO_NAME;
 
-        private DcMotor armLiftermotor = null;
-        private final int LIFTER_STOWED_ROTATIONS;
-        private final int LIFTER_ERECT_ROTATIONS;
-        private final String LIFTER_MOTOR_NAME;
+        LimitedMotorDrivenActuator laArmLifter;
+        LimitedMotorDrivenActuator laArm;
 
-        private DcMotor linearActuatorMotor = null;
-        private final int LA_RETRACRED_ROTATIONS;
-        private final int LA_EXTENDED_ROTATIONS;
-        private final String LA_MOTOR_NAME;
-
-        MineralLifter(final int GRIPPER_CLOSED_DEGREES, final int GRIPPER_OPEN_DEGREES, final int LIFTER_STOWED_ROTATIONS,
-               final int LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS,
-               final String GRIPPER_SERVO_NAME, final String LIFTER_MOTOR_NAME, final String LA_MOTOR_NAME){ //TODO Maybe Multithread Lifter and LA so they run simultaneosly
-            this.GRIPPER_CLOSED_DEGREES = GRIPPER_CLOSED_DEGREES;
-            this.GRIPPER_OPEN_DEGREES = GRIPPER_OPEN_DEGREES;
+        MineralLifter(final double GRIPPER_CLOSED, final double GRIPPER_OPEN, final int LA_ARM_LIFTER_STOWED_ROTATIONS,
+                      final int LA_ARM_LIFTER_ERECT_ROTATIONS, final int LA_RETRACTED_ROTATIONS, final int LA_EXTENDED_ROTATIONS,
+                      final String GRIPPER_SERVO_NAME, final String LA_ARM_LIFTER_MOTOR_NAME, final String LA_MOTOR_NAME){ //TODO Maybe Multithread Lifter and LA so they run simultaneosly
+            this.GRIPPER_CLOSED = GRIPPER_CLOSED;
+            this.GRIPPER_OPEN = GRIPPER_OPEN;
             this.GRIPPER_SERVO_NAME = GRIPPER_SERVO_NAME;
-            this.LIFTER_STOWED_ROTATIONS = LIFTER_STOWED_ROTATIONS;
-            this.LIFTER_ERECT_ROTATIONS = LIFTER_ERECT_ROTATIONS;
-            this.LIFTER_MOTOR_NAME = LIFTER_MOTOR_NAME;
-            this.LA_RETRACRED_ROTATIONS = LA_RETRACTED_ROTATIONS;
-            this.LA_EXTENDED_ROTATIONS = LA_EXTENDED_ROTATIONS;
-            this.LA_MOTOR_NAME = LA_MOTOR_NAME;
-        }
 
+            laArmLifter = new LimitedMotorDrivenActuator(LA_ARM_LIFTER_MOTOR_NAME,
+                    LA_ARM_LIFTER_STOWED_ROTATIONS, LA_ARM_LIFTER_ERECT_ROTATIONS, DcMotorSimple.Direction.FORWARD,
+                    false, false, true, null,
+                    null, true, false, 1);
+
+            laArm = new LimitedMotorDrivenActuator(LA_MOTOR_NAME,
+                    LA_RETRACTED_ROTATIONS, LA_EXTENDED_ROTATIONS, DcMotorSimple.Direction.FORWARD, false,
+                    false, true, null, null,
+                    true, false, 1);
+        }
 
         public void init(HardwareMap ahwMap){
             gripper = ahwMap.get(Servo.class, GRIPPER_SERVO_NAME);
-            armLiftermotor = ahwMap.get(DcMotor.class, LIFTER_MOTOR_NAME);
-            linearActuatorMotor = ahwMap.get(DcMotor.class, LA_MOTOR_NAME);
-
-            armLiftermotor.setDirection(DcMotor.Direction.FORWARD); // Set to FORWARD if
-            linearActuatorMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if
-
-            // Set all motors to zero power
-            armLiftermotor.setPower(0);
-            linearActuatorMotor.setPower(0);
             closeGripper();
 
-            // Set both motors to run with encoders.
-            armLiftermotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            linearActuatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            armLiftermotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            linearActuatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
+            laArmLifter.init(ahwMap);
+            laArm.init(ahwMap);
 
-        public void teleOpExtendLinearActuator(boolean extendButton, boolean retractButton){
-            if((linearActuatorMotor.getCurrentPosition() <= LA_EXTENDED_ROTATIONS) && extendButton){
-                linearActuatorMotor.setPower(1);
-            }
-
-            if ((linearActuatorMotor.getCurrentPosition() >= LA_RETRACRED_ROTATIONS) && retractButton){
-                linearActuatorMotor.setPower(-1);
-            }
-        }
-
-        public void teleOpLiftLinearActuator(boolean liftButton, boolean lowerButton){
-            if((armLiftermotor.getCurrentPosition() <= LIFTER_ERECT_ROTATIONS) && liftButton){
-                armLiftermotor.setPower(1);
-            }
-
-            if ((linearActuatorMotor.getCurrentPosition() >= LIFTER_STOWED_ROTATIONS) && lowerButton){
-                linearActuatorMotor.setPower(-1);
-            }
         }
 
         public void teleOpGrip(boolean gripButton, boolean openButton){ //preferably a trigger
@@ -171,91 +136,15 @@ public class REVTrixbot extends GenericFTCRobot
                 openGripper();
         }
 
-        public void extendLinearActuator(int rotations){
-            if (linearActuatorMotor.getCurrentPosition() >= LA_EXTENDED_ROTATIONS && (rotations > 0)) //abort if already erect
-                return;
-            if ((linearActuatorMotor.getCurrentPosition() <= LA_RETRACRED_ROTATIONS) && (rotations < 0)) //another reasons to abort
-                return;
-            linearActuatorMotor.setTargetPosition(rotations);
-            linearActuatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            linearActuatorMotor.setPower(1);
-            while(linearActuatorMotor.isBusy()){}//wait
-            linearActuatorMotor.setPower(0);
-            linearActuatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        public void liftLinearActuator(int rotations){
-            if (armLiftermotor.getCurrentPosition() >= LIFTER_ERECT_ROTATIONS && (rotations > 0)) //abort if already erect
-                return;
-            if ((armLiftermotor.getCurrentPosition() <= LIFTER_STOWED_ROTATIONS) && (rotations < 0)) //another reasons to abort
-                return;
-            armLiftermotor.setTargetPosition(rotations);
-            armLiftermotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            armLiftermotor.setPower(1);
-            while(armLiftermotor.isBusy()){}//wait
-            armLiftermotor.setPower(0);
-            armLiftermotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
         public void openGripper(){
-            gripper.setPosition(GRIPPER_OPEN_DEGREES);
+            gripper.setPosition(GRIPPER_OPEN);
         }
 
         public void closeGripper(){
-            gripper.setPosition(GRIPPER_CLOSED_DEGREES);
+            gripper.setPosition(GRIPPER_CLOSED);
         }
 
     }
-
-    public class RobotLift implements FTCModularizableSystems{
-        //0 rotations is lifter fully retracted.
-        private DcMotor liftMotor;
-        private final String LIFT_MOTOR_NAME;
-        private final int LIFTER_RETRACRED_ROTATIONS;
-        private final int LIFTER_EXTENDED_ROTATIONS;
-
-        RobotLift(final String LIFT_MOTOR_NAME, final int LIFTER_RETRACRED_ROTATIONS,
-                  final int LIFTER_EXTENDED_ROTATIONS){
-            this.LIFT_MOTOR_NAME = LIFT_MOTOR_NAME;
-            this.LIFTER_RETRACRED_ROTATIONS = LIFTER_RETRACRED_ROTATIONS;
-            this.LIFTER_EXTENDED_ROTATIONS = LIFTER_EXTENDED_ROTATIONS;
-        }
-
-        public void init(HardwareMap ahwMap) {
-            liftMotor = ahwMap.get(DcMotor.class, LIFT_MOTOR_NAME);
-            liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            liftMotor.setPower(0);
-
-            liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            fullyRetract(1);
-        }
-
-        public void lift(double speed, int rotations){
-            if (liftMotor.getCurrentPosition() >= LIFTER_EXTENDED_ROTATIONS && (rotations > 0)) //abort if already erect
-                return;
-            if ((liftMotor.getCurrentPosition() <= LIFTER_RETRACRED_ROTATIONS) && (rotations < 0)) //another reasons to abort
-                return;
-            int rotationTarget = liftMotor.getCurrentPosition() + rotations;
-
-            liftMotor.setTargetPosition(rotationTarget);
-            liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            liftMotor.setPower(Math.abs(speed)); //direction set.
-            while (liftMotor.isBusy());//wait for liftmotor to move
-            liftMotor.setPower(0);
-            liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        public void fullyExtend(double speed){
-            lift(Math.abs(speed), LIFTER_EXTENDED_ROTATIONS);
-        }
-
-        public void fullyRetract(double speed){
-            lift(Math.abs(speed), LIFTER_RETRACRED_ROTATIONS);
-        }
-    }
-
-
 
     public class TeamIdenfifierDepositer implements FTCModularizableSystems{
         private Servo glypgDepositServo = null;
@@ -276,8 +165,4 @@ public class REVTrixbot extends GenericFTCRobot
             glypgDepositServo.setPosition(DEPOSIT_POS);
         }
     }
-
-
-
-
 }
